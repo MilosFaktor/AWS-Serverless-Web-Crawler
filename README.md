@@ -17,7 +17,7 @@ Along the way, I applied AWS Lambda best practices learned from coursework and e
 
 ## Diagram
 
-<img src="screenshots/0-diagram.png" width="750">
+<img src="docs/screenshots/0-diagram.png" width="750">
 
 # My Journey: From Python to Node.js
 This project began as an exercise to reinforce my AWS Lambda skills, inspired by the excellent work in BeABetterDev’s Python implementation.
@@ -89,15 +89,15 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 
 ✅ Crawled Localy : cloudnecessities.com
 
-<img src="screenshots/21- code tested locally and its working.png" width="750">
+<img src="docs/screenshots/21- code tested locally and its working.png" width="750">
 
 ✅ Crawled: cloudnecessities.com
 
-<img src="screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
+<img src="docs/screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
 
 ✅ Crawled: drugastrana.rs
 
-<img src="screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
+<img src="docs/screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
 
 (Results saved in DynamoDB tables with logs available in CloudWatch.)
 
