@@ -109,5 +109,8 @@ We use the prebuilt package from [Sparticuz Chromium v130.0.0](https://github.co
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://linkedin.com/in/your-link)
 
+### Do you want to see all screenshots from project? 
+👉 [All screenshots](docs/screenshots/)
+
 ## 🧑‍💻 Author
 👋 Milos Faktor 💼 [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)

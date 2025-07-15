@@ -2,6 +2,9 @@
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://www.linkedin.com/in/milos-faktor-78b429255/)
 
+### Do you want to see all screenshots from project? 
+👉 [All screenshots](docs/screenshots/)
+
 ### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
 👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 

@@ -30,6 +30,8 @@ npm install react-router-dom
 
 ### 3. Configure routing in App.js.
 
+<img src="screenshots/20-react app router dom and LINK TO.png" width="750">
+
 ### 4. Build and upload to S3:
 ``` bash
 npm run build
@@ -306,11 +308,12 @@ Successfully crawled:
 
 Both runs extracted all intended links dynamically.
 
-## 📸 [View Full Screenshot Gallery](screenshots/)
-
 ## 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+
+### Do you want to see all screenshots from project? 
+👉 [All screenshots](docs/screenshots/)
 
 ## 📊 CloudWatch metrics show improved cost and performance after optimizations.
 <img src="screenshots/33.8-Crawler Lambda - monitoring , after lambda optimization - cloudwatch lambda insights.png" width="750">
