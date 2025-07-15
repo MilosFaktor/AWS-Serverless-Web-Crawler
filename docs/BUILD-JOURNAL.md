@@ -9,9 +9,9 @@ To make the crawler more robust, I build a new React app with React Router for c
 
 ## React App Setup:
 ### 1. Create React app:
-  npx create-react-app demo-app
-  cd demo-app
-  npm install react-router-dom
+  - npx create-react-app demo-app
+  - cd demo-app
+  - npm install react-router-dom
 
 ### 2. Create JS pages in /src:
 - Home.js (links to /pictures, /tutorial, /contact)
@@ -22,16 +22,16 @@ To make the crawler more robust, I build a new React app with React Router for c
 ### 3. Configure routing in App.js.
 
 ### 4. Build and upload to S3:
-  npm run build
+  - npm run build
 
 ### 5. Clear S3 bucket and upload the new build.
 
 ### 6. Create CloudFront invalidation (/*) to refresh the cache.
 - First attempt failed (white page).
 - Fixed by clearing browser cache and issuing another invalidation.
-<img src="screenshots/2- domain loading correct webpage through cloudfront.png" width="750">
 
 ✅ **Result: Static site deployed and ready for testing.**
+<img src="screenshots/2- domain loading correct webpage through cloudfront.png" width="750">
 
 ## Step 2: Web Crawler Functionality
 The architecture revolves around two Lambda functions and AWS services for orchestration:
@@ -86,23 +86,25 @@ The architecture revolves around two Lambda functions and AWS services for orche
 - Capacity Mode: On-Demand (pay-per-request).
 <img src="screenshots/4-DynamoDB.png" width="750">
 
-✅ **SQS and DLQ Setup**
+### ✅ SQS and DLQ Setup
 - Primary Queue: For passing URLs to the Crawler Lambda.
 - Dead Letter Queue (DLQ): Configured to capture failed messages for debugging and recovery.
-  # Created two queues:
+  **Created two queues:**
     - Primary SQS Queue (no encryption for this case).
     - DLQ and associated it with the primary SQS.
+    <img src="screenshots/30-SQS messages working.png" width="750">
 
-✅ **Linking SQS to Lambda**
+### ✅ Linking SQS to Lambda
 - Added SQS trigger to the Crawler Lambda.
 - Set batch size to 1 for fine-grained control.
 - Ensured the Crawler Lambda has permission to poll messages from SQS by updating its IAM policy.
 
-✅ **Concurrency & Error Handling**
+### ✅ Concurrency & Error Handling
 - Set reserved concurrency for the Crawler Lambda to 2 to control parallelism and avoid resource exhaustion.
-### Configured asynchronous invocation with DLQ:
+  **Configured asynchronous invocation with DLQ:**
   - Enabled retry and fallback logic in case of processing failures.
   - Note: This was not to prevent runaway crawls but to capture errors during crawling for later investigation.
+  <img src="screenshots/6.3-Crawler Lambda Asynchronous invocation.png" width="750">
 
 ### 🛡 Domain Scope Restriction Logic
 Implemented domain filtering logic in the Crawler Lambda code to ensure URLs outside the target domain are ignored.
@@ -118,12 +120,12 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 1. **Dependencies Setup**
 - Created a requirements.txt file with necessary Python packages.
 - Installed dependencies locally using:
-  pip install -r requirements.txt --target ./dependencies
+  - pip install -r requirements.txt --target ./dependencies
 
 - Organized directories:
-  /dependencies
-  /initiator_lambda
-  /crawler_lambda
+  - /dependencies
+  - /initiator_lambda
+  - /crawler_lambda
 
 - Zipped each directory individually for upload to S3.
 
@@ -143,7 +145,7 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 
 - Verified that the module existed in the layer, but Lambda runtime couldn’t locate it.
 
-#  Challenges Faced
+###  Challenges Faced
 
 1. **Python Dependency Packaging**
 - Initially packaged dependencies for Python 3.11 locally, but Lambda runtime was Python 3.12.
@@ -152,13 +154,13 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 2. **Incorrect Layer Directory Structure**
 - AWS Lambda requires Python layers to follow this structure:
 
-layer_content.zip
-└ python
-    └ lib
-        └ python3.12
-            └ site-packages
-                └ requests
-                └ <other dependencies>
+-   layer_content.zip
+-   └ python
+-       └ lib
+-           └ python3.12
+-               └ site-packages
+-                   └ requests
+-                   └ <other dependencies>
 
 - Repackaged layers following this format and reuploaded.
 
@@ -182,13 +184,14 @@ While the Python crawler worked locally, it could not be deployed to AWS Lambda 
 - Dynamic React Router links not being detected without fully rendering the page.
 
 This approach was abandoned in favor of a JavaScript-based crawler using Puppeteer-Core and Sparticuz Chromium, which overcame these limitations.
+<img src="screenshots/21- code tested locally and its working.png" width="750">
 
 
 ## ✅ Correct Approach: JavaScript Crawler (Final Implementation)
 
 I rewrote the crawler in JavaScript to overcome Python’s Lambda limitations and improve dynamic content handling. This approach uses Puppeteer-Core with Sparticuz Chromium—a Chromium build optimized for AWS Lambda.
 
-🚀 **Why Switch to JavaScript?**
+###  Why Switch to JavaScript?
 
   - Python + Selenium Limitations: Hit Lambda layer size limit (250MB). Couldn’t package Chromium/Selenium effectively.
 
@@ -200,12 +203,12 @@ I rewrote the crawler in JavaScript to overcome Python’s Lambda limitations an
 
 Installed in a Linux environment to match AWS Lambda:
 
-"@aws-sdk/client-dynamodb": "^3.687.0",
-"@aws-sdk/client-sqs": "^3.687.0",
-"follow-redirects": "^1.15.9",
-"puppeteer-core": "^23.7.1",
-"tar-fs": "^3.0.6",
-"uuid": "^11.0.2"
+-   "@aws-sdk/client-dynamodb": "^3.687.0",
+-   "@aws-sdk/client-sqs": "^3.687.0",
+-   "follow-redirects": "^1.15.9",
+-   "puppeteer-core": "^23.7.1",
+-   "tar-fs": "^3.0.6",
+-   "uuid": "^11.0.2"
 
 ✅ **Lambda Layers Created**
 - Layer 1: Sparticuz Chromium
@@ -222,27 +225,27 @@ Installed in a Linux environment to match AWS Lambda:
 
 ## 🪲 Debugging & Challenges
 
-1. **Duplicate Crawling**
+### 1. Duplicate Crawling
 Initially, URLs were revisited endlessly. Fixed by checking DynamoDB’s VisitedURLs table before enqueuing new links.
 
-2. **Crawling Beyond Domain Scope**
+### 2. Crawling Beyond Domain Scope
 - Accidentally crawled external domains (e.g., YouTube, Facebook).
 - Added domain scope restriction to prevent this.
 
-3. **Lambda Timeout Issues**
+### 3. Lambda Timeout Issues
 - Handled cold starts and dynamic rendering delays.
 - Increased timeout and tuned Puppeteer waits for dynamic routes.
 
-4. **AWS Client Connection Problems**
+### 4. AWS Client Connection Problems
 - Adjusted SDK usage for compatibility with Node.js version on Lambda.
 
-5. **Layer Packaging Issues**
+### 5. Layer Packaging Issues
 Ensured layers were structured correctly for Lambda:
 
-layer.zip
-└ nodejs
-    └ node_modules
-        └ <dependencies>
+-   layer.zip
+-   └ nodejs
+-       └ node_modules
+-           └ <dependencies>
 
 ## Optimization: Lambda Power Tuning
 Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cost configuration.
@@ -252,10 +255,12 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
   Best Memory Setting: 812MB
   Reserved Concurrency: 20
   Result: Reduced crawl time from ~60s → ~12s per URL
+  <img src="screenshots/34.5- power tuning charts 512-1024 range searching for cost optimization.png" width="750">
 
 ##  Final Deployment
 
 - Environment Variables: Configured REGION, SQS_URL, MAX_DEPTH, and TIMEOUT for dynamic parameter control.
+<img src="screenshots/35.2- ENV .png" width="750">
 
 ### Lambda Aliases:
   PROD: Points to stable release.
@@ -265,13 +270,20 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
 
 Successfully crawled:
   - My domain: cloudnecessities.com
+  <img src="screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
   - Test site: drugastrana.rs
+  <img src="screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
 
 Both runs extracted all intended links dynamically.
 
-📸 [View Full Screenshot Gallery](screenshots/)
-🎥 Demo Video: (linked in repository)
-📊 CloudWatch metrics show improved cost and performance after optimizations.
+## 📸 [View Full Screenshot Gallery](screenshots/)
+
+## 🎥 Demo Video
+Watch the full crawler in action on LinkedIn:  
+👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+
+## 📊 CloudWatch metrics show improved cost and performance after optimizations.
+<img src="screenshots/33.8-Crawler Lambda - monitoring , after lambda optimization - cloudwatch lambda insights.com.png" width="750">
 
 
 ### Lessons Learned
