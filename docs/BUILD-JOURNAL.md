@@ -1,9 +1,12 @@
 # 📓 Build Journal: Serverless Web Crawler
-This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
 
 ## 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+
+This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
+
+## Diagram
 
 <img src="screenshots/0-diagram.png" width="750">
 
