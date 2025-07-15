@@ -1,8 +1,8 @@
-# 🕷️ Serverless Web Crawler on AWS
-
-## 🎥 Demo Video
+### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+
+# 🕷️ Serverless Web Crawler on AWS
 
 A fully serverless web crawler that dynamically discovers and retrieves all unique internal links from a website — even those rendered on the client-side via React Router or other single-page app frameworks.
 
@@ -54,7 +54,7 @@ Puppeteer + Chromium      	Headless browser for crawling dynamic, client-rendere
 
 Loads the page using Puppeteer + Sparticuz Chromium.
 
-Extracts all static <a href> and dynamic <Link to=""> links.
+Extracts all static `<a href>` and dynamic `<Link to="">` links.
 
 Checks DynamoDB for previously visited URLs.
 
@@ -63,16 +63,16 @@ Enqueues new URLs back into SQS.
 5️⃣ Results are stored in DynamoDB.
 
 ## Challenges I Solved
-# 1. Lambda Layer Size Limit
+### 1. Lambda Layer Size Limit
 AWS Lambda has a 250MB uncompressed layer limit. Switching from Python/Selenium to Node.js + Sparticuz Chromium solved this elegantly.
 
-# 2. Dynamic Content Rendering
+### 2. Dynamic Content Rendering
 React Router links don’t exist in static HTML. Puppeteer renders the page and extracts them correctly.
 
-# 3. Throttling & Fail-Safes
+### 3. Throttling & Fail-Safes
 Refactored the crawler to stay within the target domain and avoid runaway crawls (e.g., crawling Facebook by accident). Controlled concurrency to avoid hitting Lambda throttling limits.
 
-# 4. Cost Optimization
+### 4. Cost Optimization
 Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execution time for the best cost/performance tradeoff.
 
 ## Project Structure
@@ -119,5 +119,5 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 
 Special thanks to BeABetterDev for the original Python implementation.
 
-📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+# 📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
 Check out the [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
