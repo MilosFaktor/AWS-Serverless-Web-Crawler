@@ -43,7 +43,7 @@ The result? A scalable, cost-efficient crawler that works perfectly with both st
 AWS Lambda	                Initiator (Python) & Crawler (Node.js) functions
 SQS & DLQ	                Queuing system & error handling
 DynamoDB	                Tracks visited URLs to avoid duplicates
-S3 Hosts                       React-based test websites for validation
+S3 Hosts                        React-based test websites for validation
 CloudFront	                Handles cache invalidation for updated site content
 CloudWatch	                Debugging and performance insights
 Step Functions  	        Power tuning for Lambda cost/performance optimization
