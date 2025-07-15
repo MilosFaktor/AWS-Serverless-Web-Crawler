@@ -155,7 +155,7 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 
 2. **Incorrect Layer Directory Structure**
 - AWS Lambda requires Python layers to follow this structure:
-
+``` bash
   -   layer_content.zip
   -   └ python
   -       └ lib
@@ -163,7 +163,7 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
   -               └ site-packages
   -                   └ requests
   -                   └ <other dependencies>
-
+```
 - Repackaged layers following this format and reuploaded.
 
 3. **Additional Dependency Errors**
