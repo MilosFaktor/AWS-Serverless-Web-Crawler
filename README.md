@@ -1,6 +1,6 @@
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
-👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+👉 [Watch Demo Video](https://www.linkedin.com/in/milos-faktor-78b429255/)
 
 # 🕷️ Serverless Web Crawler on AWS
 
@@ -110,7 +110,7 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 - Cost-optimized and production-ready
 
 ## 🧑‍💻 Author
-👋 Milos Faktor 💼 [LinkedIn](https://linkedin.com/in/your-link)
+👋 Milos Faktor 💼 [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)
 
 Special thanks to BeABetterDev for the original Python implementation.
 
