@@ -69,7 +69,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Chose runtime Python 3.12.
   - Selected “Create a new role” and attached “Simple microservice permissions” from AWS templates.
 
-  <img src="screenshots/3-Lambda functions created.png" width="750">
+<img src="screenshots/3-Lambda functions created.png" width="750">
 
 ### ✅ Crawler Lambda
 - Runtime: Node.js
@@ -102,7 +102,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
     - Primary SQS Queue (no encryption for this case).
     - DLQ and associated it with the primary SQS.
 
-    <img src="screenshots/30-SQS messages working.png" width="750">
+<img src="screenshots/30-SQS messages working.png" width="750">
 
 ### ✅ Linking SQS to Lambda
 - Added SQS trigger to the Crawler Lambda.
@@ -117,7 +117,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Enabled retry and fallback logic in case of processing failures.
   - Note: This was not to prevent runaway crawls but to capture errors during crawling for later investigation.
 
-  <img src="screenshots/6.3-Crawler Lambda Asynchronous invocation.png" width="750">
+<img src="screenshots/6.3-Crawler Lambda Asynchronous invocation.png" width="750">
 
 ### 🛡 Domain Scope Restriction Logic
 Implemented domain filtering logic in the Crawler Lambda code to ensure URLs outside the target domain are ignored.
@@ -274,7 +274,7 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
   Reserved Concurrency: 20
   Result: Reduced crawl time from ~60s → ~12s per URL
 
-  <img src="screenshots/34.5- power tuning charts 512-1024 range searching for cost optimization.png" width="750">
+<img src="screenshots/34.5- power tuning charts 512-1024 range searching for cost optimization.png" width="750">
 
 ##  Final Deployment
 
@@ -291,10 +291,10 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
 Successfully crawled:
   - My domain: cloudnecessities.com
 
-  <img src="screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
+<img src="screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
   - Test site: drugastrana.rs
-  
-  <img src="screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
+
+<img src="screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
 
 Both runs extracted all intended links dynamically.
 
