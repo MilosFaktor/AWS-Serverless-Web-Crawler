@@ -1,8 +1,8 @@
-# 📓 Build Journal: Serverless Web Crawler
-
-# 🎥 Demo Video
+### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+
+# 📓 Build Journal: Serverless Web Crawler
 
 This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
 
@@ -322,3 +322,6 @@ Python vs JavaScript on Lambda: Puppeteer + Sparticuz Chromium works far better 
 Layer Packaging: Critical to match AWS runtime environments.
 
 Debugging: CloudWatch logs and Lambda Insights were essential for performance tuning.
+
+## 🧑‍💻 Author
+👋 Milos Faktor 💼 [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)
