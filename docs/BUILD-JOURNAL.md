@@ -44,7 +44,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
 ### 2. Crawler Lambda (Node.js)
 - Triggered by SQS messages.
 - Loads pages using Puppeteer (headless Chromium).
-- Extracts all <a href=""> and <Link to=""> links (for React Router).
+- Extracts all `<a href=""> and <Link to="">` links (for React Router).
 - Checks DynamoDB for visited URLs.
 - Enqueues new URLs into SQS for recursive crawling.
 
@@ -64,6 +64,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Navigated to Lambda > Create Function.
   - Chose runtime Python 3.12.
   - Selected “Create a new role” and attached “Simple microservice permissions” from AWS templates.
+  <img src="screenshots/3-Lambda functions created.png" width="750">
 
 ### ✅ Crawler Lambda
 - Runtime: Node.js
@@ -78,6 +79,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Chose runtime Node.js.
   - Selected “Create a new role” and attached “SQS Poller role” and “Simple microservice permissions” from AWS templates.
 <img src="screenshots/6.2-eddited IAM policy for Crawler Lambda role.png" width="750">
+<img src="screenshots/3-Crawler Lambda.com.png" width="750">
 
 ### ✅ DynamoDB Table
 - Table Name: VisitedURLs
@@ -154,13 +156,13 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 2. **Incorrect Layer Directory Structure**
 - AWS Lambda requires Python layers to follow this structure:
 
--   layer_content.zip
--   └ python
--       └ lib
--           └ python3.12
--               └ site-packages
--                   └ requests
--                   └ <other dependencies>
+  -   layer_content.zip
+  -   └ python
+  -       └ lib
+  -           └ python3.12
+  -               └ site-packages
+  -                   └ requests
+  -                   └ <other dependencies>
 
 - Repackaged layers following this format and reuploaded.
 
@@ -173,7 +175,7 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 - Local testing succeeded, but Lambda deployments repeatedly hit the 250MB size limit for layers.
 
 5. **Dynamic Content Rendering**
-- Realized React apps using react-router-dom don’t expose <a href="..."> links in the initial HTML.
+- Realized React apps using react-router-dom don’t expose `<a href="...">` links in the initial HTML.
 - Selenium could handle this locally but failed to scale in Lambda due to size and runtime constraints.
 
 ### ⚠️ Outcome
@@ -184,8 +186,8 @@ While the Python crawler worked locally, it could not be deployed to AWS Lambda 
 - Dynamic React Router links not being detected without fully rendering the page.
 
 This approach was abandoned in favor of a JavaScript-based crawler using Puppeteer-Core and Sparticuz Chromium, which overcame these limitations.
-<img src="screenshots/21- code tested locally and its working.png" width="750">
 
+<img src="screenshots/21- code tested locally and its working.png" width="750">
 
 ## ✅ Correct Approach: JavaScript Crawler (Final Implementation)
 
@@ -283,7 +285,7 @@ Watch the full crawler in action on LinkedIn:
 👉 [Watch Demo Video](https://linkedin.com/in/your-link)
 
 ## 📊 CloudWatch metrics show improved cost and performance after optimizations.
-<img src="screenshots/33.8-Crawler Lambda - monitoring , after lambda optimization - cloudwatch lambda insights.com.png" width="750">
+<img src="screenshots/33.8-Crawler Lambda - monitoring , after lambda optimization - cloudwatch lambda insights.png" width="750">
 
 
 ### Lessons Learned
