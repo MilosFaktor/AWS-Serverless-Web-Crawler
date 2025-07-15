@@ -1,5 +1,6 @@
 # 📓 Build Journal: Serverless Web Crawler
 This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
+
 <img src="screenshots/0-diagram.png" width="750">
 
 ## 🛠️ Step 1: Preparing a Website to Crawl
@@ -9,10 +10,11 @@ To make the crawler more robust, I build a new React app with React Router for c
 
 ## React App Setup:
 ### 1. Create React app:
-  - npx create-react-app demo-app
-  - cd demo-app
-  - npm install react-router-dom
-
+``` bash 
+npx create-react-app demo-app
+cd demo-app
+npm install react-router-dom
+```
 ### 2. Create JS pages in /src:
 - Home.js (links to /pictures, /tutorial, /contact)
 - Tutorial.js (links to /tutorial/courses)
@@ -22,8 +24,9 @@ To make the crawler more robust, I build a new React app with React Router for c
 ### 3. Configure routing in App.js.
 
 ### 4. Build and upload to S3:
-  - npm run build
-
+``` bash
+npm run build
+```
 ### 5. Clear S3 bucket and upload the new build.
 
 ### 6. Create CloudFront invalidation (/*) to refresh the cache.
@@ -31,6 +34,7 @@ To make the crawler more robust, I build a new React app with React Router for c
 - Fixed by clearing browser cache and issuing another invalidation.
 
 ✅ **Result: Static site deployed and ready for testing.**
+
 <img src="screenshots/2- domain loading correct webpage through cloudfront.png" width="750">
 
 ## Step 2: Web Crawler Functionality
@@ -64,6 +68,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Navigated to Lambda > Create Function.
   - Chose runtime Python 3.12.
   - Selected “Create a new role” and attached “Simple microservice permissions” from AWS templates.
+
   <img src="screenshots/3-Lambda functions created.png" width="750">
 
 ### ✅ Crawler Lambda
@@ -78,14 +83,16 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Navigated to Lambda > Create Function.
   - Chose runtime Node.js.
   - Selected “Create a new role” and attached “SQS Poller role” and “Simple microservice permissions” from AWS templates.
+
 <img src="screenshots/6.2-eddited IAM policy for Crawler Lambda role.png" width="750">
-<img src="screenshots/3-Crawler Lambda.png" width="750">
+
 
 ### ✅ DynamoDB Table
 - Table Name: VisitedURLs
 - Partition Key: url
 - Sort Key: runID
 - Capacity Mode: On-Demand (pay-per-request).
+
 <img src="screenshots/4-DynamoDB.png" width="750">
 
 ### ✅ SQS and DLQ Setup
@@ -94,6 +101,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   **Created two queues:**
     - Primary SQS Queue (no encryption for this case).
     - DLQ and associated it with the primary SQS.
+
     <img src="screenshots/30-SQS messages working.png" width="750">
 
 ### ✅ Linking SQS to Lambda
@@ -101,11 +109,14 @@ The architecture revolves around two Lambda functions and AWS services for orche
 - Set batch size to 1 for fine-grained control.
 - Ensured the Crawler Lambda has permission to poll messages from SQS by updating its IAM policy.
 
+<img src="screenshots/3-Crawler Lambda.png" width="750">
+
 ### ✅ Concurrency & Error Handling
 - Set reserved concurrency for the Crawler Lambda to 2 to control parallelism and avoid resource exhaustion.
   **Configured asynchronous invocation with DLQ:**
   - Enabled retry and fallback logic in case of processing failures.
   - Note: This was not to prevent runaway crawls but to capture errors during crawling for later investigation.
+
   <img src="screenshots/6.3-Crawler Lambda Asynchronous invocation.png" width="750">
 
 ### 🛡 Domain Scope Restriction Logic
@@ -122,7 +133,9 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 1. **Dependencies Setup**
 - Created a requirements.txt file with necessary Python packages.
 - Installed dependencies locally using:
-  - pip install -r requirements.txt --target ./dependencies
+``` bash
+pip install -r requirements.txt --target ./dependencies
+```
 
 - Organized directories:
   - /dependencies
@@ -143,8 +156,9 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 4. **Initial Testing and Issues**
 - Testing the Initiator Lambda worked after adjusting IAM policies (added sqs:GetQueueUrl).
 - However, Crawler Lambda failed with:
-    ModuleNotFoundError: No module named 'requests_html'
-
+``` bash
+ModuleNotFoundError: No module named 'requests_html'
+```
 - Verified that the module existed in the layer, but Lambda runtime couldn’t locate it.
 
 ###  Challenges Faced
@@ -156,13 +170,13 @@ Initially, I attempted to build the web crawler using Python, leveraging Seleniu
 2. **Incorrect Layer Directory Structure**
 - AWS Lambda requires Python layers to follow this structure:
 ``` bash
-  -   layer_content.zip
-  -   └ python
-  -       └ lib
-  -           └ python3.12
-  -               └ site-packages
-  -                   └ requests
-  -                   └ <other dependencies>
+   layer_content.zip
+    └ python
+       └ lib
+         └ python3.12
+              └ site-packages
+                  └ requests
+                  └ <other dependencies>
 ```
 - Repackaged layers following this format and reuploaded.
 
@@ -204,17 +218,19 @@ I rewrote the crawler in JavaScript to overcome Python’s Lambda limitations an
 ### Dependencies
 
 Installed in a Linux environment to match AWS Lambda:
-
--   "@aws-sdk/client-dynamodb": "^3.687.0",
--   "@aws-sdk/client-sqs": "^3.687.0",
--   "follow-redirects": "^1.15.9",
--   "puppeteer-core": "^23.7.1",
--   "tar-fs": "^3.0.6",
--   "uuid": "^11.0.2"
-
+``` bash
+   "@aws-sdk/client-dynamodb": "^3.687.0",
+   "@aws-sdk/client-sqs": "^3.687.0",
+   "follow-redirects": "^1.15.9",
+   "puppeteer-core": "^23.7.1",
+   "tar-fs": "^3.0.6",
+   "uuid": "^11.0.2"
+```
 ✅ **Lambda Layers Created**
 - Layer 1: Sparticuz Chromium
+``` bash
   Sparticuz Chromium v130.0.0
+```
 - Layer 2: Node.js dependencies (zipped from node_modules)
 
 ### Key Improvements
@@ -243,12 +259,12 @@ Initially, URLs were revisited endlessly. Fixed by checking DynamoDB’s Visited
 
 ### 5. Layer Packaging Issues
 Ensured layers were structured correctly for Lambda:
-
--   layer.zip
--   └ nodejs
--       └ node_modules
--           └ <dependencies>
-
+``` bash
+   layer.zip
+   └ nodejs
+       └ node_modules
+           └ <dependencies>
+```
 ## Optimization: Lambda Power Tuning
 Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cost configuration.
 
