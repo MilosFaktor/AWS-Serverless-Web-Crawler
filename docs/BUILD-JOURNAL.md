@@ -1,6 +1,10 @@
 # 📓 Build Journal: Serverless Web Crawler
 This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
 
+## 🎥 Demo Video
+Watch the full crawler in action on LinkedIn:  
+👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+
 <img src="screenshots/0-diagram.png" width="750">
 
 ## 🛠️ Step 1: Preparing a Website to Crawl
@@ -269,10 +273,10 @@ Ensured layers were structured correctly for Lambda:
 Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cost configuration.
 
 ### Power Tuning Details:
-  Power Values Tested: [128, 256, 512, 1024, 2048, 3008]
-  Best Memory Setting: 812MB
-  Reserved Concurrency: 20
-  Result: Reduced crawl time from ~60s → ~12s per URL
+  - Power Values Tested: [128, 256, 512, 1024, 2048, 3008]
+  - Best Memory Setting: 812MB
+  - Reserved Concurrency: 20
+  - Result: Reduced crawl time from ~60s → ~12s per URL
 
 <img src="screenshots/34.5- power tuning charts 512-1024 range searching for cost optimization.png" width="750">
 
@@ -292,6 +296,7 @@ Successfully crawled:
   - My domain: cloudnecessities.com
 
 <img src="screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
+
   - Test site: drugastrana.rs
 
 <img src="screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
