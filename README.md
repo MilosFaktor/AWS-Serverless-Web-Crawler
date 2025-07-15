@@ -121,4 +121,4 @@ Special thanks to BeABetterDev for the original Python implementation.
 👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 
 ### Do you want to see all screenshots from project? 
-👉 [All screenshots](docs/screenshots/*)
+👉 [All screenshots](docs/screenshots/)
