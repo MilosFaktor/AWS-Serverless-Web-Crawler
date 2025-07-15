@@ -2,6 +2,9 @@
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://www.linkedin.com/in/milos-faktor-78b429255/)
 
+## 📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+Check out the [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
+
 # 🕷️ Serverless Web Crawler on AWS
 
 A fully serverless web crawler that dynamically discovers and retrieves all unique internal links from a website — even those rendered on the client-side via React Router or other single-page app frameworks.
@@ -36,11 +39,11 @@ The result? A scalable, cost-efficient crawler that works perfectly with both st
 
 ## Tech Stack & AWS Services
 ``` bash
-`Service`                   `Role`
+`Service`                       `Role`  
 AWS Lambda	                Initiator (Python) & Crawler (Node.js) functions
 SQS & DLQ	                Queuing system & error handling
 DynamoDB	                Tracks visited URLs to avoid duplicates
-S3 Hosts                    React-based test websites for validation
+S3 Hosts                       React-based test websites for validation
 CloudFront	                Handles cache invalidation for updated site content
 CloudWatch	                Debugging and performance insights
 Step Functions  	        Power tuning for Lambda cost/performance optimization
@@ -114,5 +117,5 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 
 Special thanks to BeABetterDev for the original Python implementation.
 
-# 📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+## 📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
 Check out the [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
