@@ -1,85 +1,85 @@
 # 📓 Build Journal: Serverless Web Crawler
 This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
+<img src="screenshots/0-diagram.png" width="750">
 
 ## 🛠️ Step 1: Preparing a Website to Crawl
 As the first step, I needed a website to test the crawler.
 I already owned a domain and had an existing static webpage (a simple React app) hosted in S3.
 To make the crawler more robust, I build a new React app with React Router for client-side dynamic navigation and upload it to S3.
-<img src="screenshots/0-diagram.png" width="750">
 
 ## React App Setup:
-1. **Create React app:**
+### 1. Create React app:
   npx create-react-app demo-app
   cd demo-app
   npm install react-router-dom
 
-2. **Create JS pages in /src:**
+### 2. Create JS pages in /src:
 - Home.js (links to /pictures, /tutorial, /contact)
 - Tutorial.js (links to /tutorial/courses)
 - Courses.js (links to /contact)
 - Other pages: /pictures, /contact
 
-3. **Configure routing in App.js.**
+### 3. Configure routing in App.js.
 
-4. **Build and upload to S3:**
+### 4. Build and upload to S3:
   npm run build
 
-5. **Clear S3 bucket and upload the new build.**
+### 5. Clear S3 bucket and upload the new build.
 
-6. **Create CloudFront invalidation (/*) to refresh the cache.**
+### 6. Create CloudFront invalidation (/*) to refresh the cache.
 - First attempt failed (white page).
 - Fixed by clearing browser cache and issuing another invalidation.
 <img src="screenshots/2- domain loading correct webpage through cloudfront.png" width="750">
 
-### ✅ Result: Static site deployed and ready for testing.
+✅ **Result: Static site deployed and ready for testing.**
 
 ## Step 2: Web Crawler Functionality
 The architecture revolves around two Lambda functions and AWS services for orchestration:
 
-1. **Initiator Lambda (Python)**
+### 1. Initiator Lambda (Python)
 - Receives a root URL.
 - Saves URL in DynamoDB with a unique runID.
 - Sends URL to an SQS Queue for processing.
 
-2. **Crawler Lambda (Node.js)**
+### 2. Crawler Lambda (Node.js)
 - Triggered by SQS messages.
 - Loads pages using Puppeteer (headless Chromium).
 - Extracts all <a href=""> and <Link to=""> links (for React Router).
 - Checks DynamoDB for visited URLs.
 - Enqueues new URLs into SQS for recursive crawling.
 
-3. **Process continues until all unique** 
+### 3. Process continues until all unique
 - internal links are visited, respecting a max crawl depth.
 
 ## Step 3: AWS Infrastructure
-✅ **Initiator Lambda**
+### ✅ Initiator Lambda
 - Runtime: Python 3.12
 - Purpose: Starts the crawl process by writing the root URL into DynamoDB and queuing it in SQS.
 
-### Execution Role:
+  ***Execution Role:***
   - Created a new IAM role.
   - Added DynamoDB permissions: "BatchGetItem", "BatchWriteItem", "PutItem", "DeleteItem", "GetItem", "Scan", "Query", "UpdateItem".
   - Added SQS permission: "SendMessage" for the crawler SQS queue only.
-### Creation Process:
+  ***Creation Process:***
   - Navigated to Lambda > Create Function.
   - Chose runtime Python 3.12.
   - Selected “Create a new role” and attached “Simple microservice permissions” from AWS templates.
 
-✅ **Crawler Lambda**
+### ✅ Crawler Lambda
 - Runtime: Node.js
 - Purpose: Consumes messages from SQS, uses Puppeteer (headless Chromium) to load pages, extracts links, checks visited URLs in DynamoDB, and queues new links.
 
-### Execution Role:
+  **Execution Role:**
   - Created a new IAM role.
   - Added DynamoDB permissions: "BatchGetItem", "BatchWriteItem", "PutItem", "DeleteItem", "GetItem", "Scan", "Query", "UpdateItem".
   - Added SQS permissions: "SendMessage", "ReceiveMessage", "DeleteMessage", "GetQueueAttributes", "GetQueueUrl" for both primary SQS and DLQ.
-### Creation Process:
+  **Creation Process:**
   - Navigated to Lambda > Create Function.
   - Chose runtime Node.js.
   - Selected “Create a new role” and attached “SQS Poller role” and “Simple microservice permissions” from AWS templates.
 <img src="screenshots/6.2-eddited IAM policy for Crawler Lambda role.png" width="750">
 
-✅ **DynamoDB Table**
+### ✅ DynamoDB Table
 - Table Name: VisitedURLs
 - Partition Key: url
 - Sort Key: runID
