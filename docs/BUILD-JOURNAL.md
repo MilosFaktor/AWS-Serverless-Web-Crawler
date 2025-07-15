@@ -1,4 +1,4 @@
-### 📓 Build Journal: Serverless Web Crawler
+#📓 Build Journal: Serverless Web Crawler
 This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
 
 ## 🛠️ Step 1: Preparing a Website to Crawl
@@ -6,6 +6,8 @@ As the first step, I needed a website to test the crawler.
 I already owned a domain and had an existing static webpage (a simple React app) hosted in S3.
 To make the crawler more robust, I build a new React app with React Router for client-side dynamic navigation and upload it to S3.
 ![Diagram](screenshots/0-diagram.png)
+<img src="screenshots/0-diagram.png" width="500">
+
 
 ## React App Setup:
 1. **Create React app:**
@@ -55,11 +57,11 @@ The architecture revolves around two Lambda functions and AWS services for orche
 - Runtime: Python 3.12
 - Purpose: Starts the crawl process by writing the root URL into DynamoDB and queuing it in SQS.
 
-# Execution Role:
+### Execution Role:
   - Created a new IAM role.
   - Added DynamoDB permissions: "BatchGetItem", "BatchWriteItem", "PutItem", "DeleteItem", "GetItem", "Scan", "Query", "UpdateItem".
   - Added SQS permission: "SendMessage" for the crawler SQS queue only.
-# Creation Process:
+### Creation Process:
   - Navigated to Lambda > Create Function.
   - Chose runtime Python 3.12.
   - Selected “Create a new role” and attached “Simple microservice permissions” from AWS templates.
@@ -68,11 +70,11 @@ The architecture revolves around two Lambda functions and AWS services for orche
 - Runtime: Node.js
 - Purpose: Consumes messages from SQS, uses Puppeteer (headless Chromium) to load pages, extracts links, checks visited URLs in DynamoDB, and queues new links.
 
-# Execution Role:
+### Execution Role:
   - Created a new IAM role.
   - Added DynamoDB permissions: "BatchGetItem", "BatchWriteItem", "PutItem", "DeleteItem", "GetItem", "Scan", "Query", "UpdateItem".
   - Added SQS permissions: "SendMessage", "ReceiveMessage", "DeleteMessage", "GetQueueAttributes", "GetQueueUrl" for both primary SQS and DLQ.
-# Creation Process:
+### Creation Process:
   - Navigated to Lambda > Create Function.
   - Chose runtime Node.js.
   - Selected “Create a new role” and attached “SQS Poller role” and “Simple microservice permissions” from AWS templates.
@@ -97,11 +99,11 @@ The architecture revolves around two Lambda functions and AWS services for orche
 
 ✅ **Concurrency & Error Handling**
 - Set reserved concurrency for the Crawler Lambda to 2 to control parallelism and avoid resource exhaustion.
-# Configured asynchronous invocation with DLQ:
+### Configured asynchronous invocation with DLQ:
   - Enabled retry and fallback logic in case of processing failures.
   - Note: This was not to prevent runaway crawls but to capture errors during crawling for later investigation.
 
-# 🛡 Domain Scope Restriction Logic
+### 🛡 Domain Scope Restriction Logic
 Implemented domain filtering logic in the Crawler Lambda code to ensure URLs outside the target domain are ignored.
 - Example: Prevented the crawler from accidentally queuing links to sites like YouTube or Facebook.
 - This restriction happens at the application level, not at the infrastructure level.
@@ -110,7 +112,7 @@ Implemented domain filtering logic in the Crawler Lambda code to ensure URLs out
 
 Initially, I attempted to build the web crawler using Python, leveraging Selenium and a custom headless Chromium layer. The goal was to handle both static and dynamic content. While this approach worked locally, it ultimately failed to deploy on AWS Lambda due to several technical challenges.
 
-# 🛠 Steps Taken
+### 🛠 Steps Taken
 
 1. **Dependencies Setup**
 - Created a requirements.txt file with necessary Python packages.
@@ -171,7 +173,7 @@ layer_content.zip
 - Realized React apps using react-router-dom don’t expose <a href="..."> links in the initial HTML.
 - Selenium could handle this locally but failed to scale in Lambda due to size and runtime constraints.
 
-# ⚠️ Outcome
+### ⚠️ Outcome
 
 While the Python crawler worked locally, it could not be deployed to AWS Lambda due to:
 - Lambda layer size constraints (250MB).
@@ -193,7 +195,7 @@ I rewrote the crawler in JavaScript to overcome Python’s Lambda limitations an
 
   - Dynamic Content Support: Puppeteer handles React Router links and dynamically rendered pages out of the box.
 
-# Dependencies
+### Dependencies
 
 Installed in a Linux environment to match AWS Lambda:
 
@@ -209,7 +211,7 @@ Installed in a Linux environment to match AWS Lambda:
   Sparticuz Chromium v130.0.0
 - Layer 2: Node.js dependencies (zipped from node_modules)
 
-# Key Improvements
+### Key Improvements
 
 - Asset Exclusion for Performance: Excluded unnecessary content like images, videos, fonts, and stylesheets in Puppeteer to reduce page load time.
 
@@ -244,7 +246,7 @@ layer.zip
 ## Optimization: Lambda Power Tuning
 Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cost configuration.
 
-# Power Tuning Details:
+### Power Tuning Details:
   Power Values Tested: [128, 256, 512, 1024, 2048, 3008]
   Best Memory Setting: 812MB
   Reserved Concurrency: 20
@@ -254,7 +256,7 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
 
 - Environment Variables: Configured REGION, SQS_URL, MAX_DEPTH, and TIMEOUT for dynamic parameter control.
 
-# Lambda Aliases:
+### Lambda Aliases:
   PROD: Points to stable release.
   TEST: Used for A/B testing new versions.
 
@@ -270,7 +272,7 @@ Both runs extracted all intended links dynamically.
 📊 CloudWatch metrics show improved cost and performance after optimizations.
 
 
-# Lessons Learned
+### Lessons Learned
 Python vs JavaScript on Lambda: Puppeteer + Sparticuz Chromium works far better than Selenium in Lambda.
 
 Layer Packaging: Critical to match AWS runtime environments.
