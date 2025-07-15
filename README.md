@@ -38,29 +38,25 @@ The result? A scalable, cost-efficient crawler that works perfectly with both st
 ``` bash
 `Service`                   `Role`
 AWS Lambda	                Initiator (Python) & Crawler (Node.js) functions
-SQS & DLQ	                  Queuing system & error handling
-DynamoDB	                  Tracks visited URLs to avoid duplicates
-S3	Hosts                   React-based test websites for validation
+SQS & DLQ	                Queuing system & error handling
+DynamoDB	                Tracks visited URLs to avoid duplicates
+S3 Hosts                    React-based test websites for validation
 CloudFront	                Handles cache invalidation for updated site content
 CloudWatch	                Debugging and performance insights
-Step Functions  	          Power tuning for Lambda cost/performance optimization
+Step Functions  	        Power tuning for Lambda cost/performance optimization
 Puppeteer + Chromium      	Headless browser for crawling dynamic, client-rendered pages
 ```
 
 ## High-Level Workflow
-1️⃣ User submits a root URL to the Initiator Lambda.
-2️⃣ Initiator Lambda saves the URL in DynamoDB and enqueues it in SQS.
-3️⃣ Crawler Lambda consumes SQS messages:
-
-Loads the page using Puppeteer + Sparticuz Chromium.
-
-Extracts all static `<a href>` and dynamic `<Link to="">` links.
-
-Checks DynamoDB for previously visited URLs.
-
-Enqueues new URLs back into SQS.
-4️⃣ Process repeats until all unique links are visited (with configurable max depth).
-5️⃣ Results are stored in DynamoDB.
+1. **User submits a root URL to the Initiator Lambda.**
+2. **Initiator Lambda saves the URL in DynamoDB and enqueues it in SQS.**
+3. **Crawler Lambda consumes SQS messages:**
+- Loads the page using Puppeteer + Sparticuz Chromium.
+- Extracts all static `<a href>` and dynamic `<Link to="">` links.
+- Checks DynamoDB for previously visited URLs.
+- Enqueues new URLs back into SQS.
+4. **Process repeats until all unique links are visited (with configurable max depth).**
+5. **Results are stored in DynamoDB.**
 
 ## Challenges I Solved
 ### 1. Lambda Layer Size Limit
@@ -101,21 +97,20 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 
 (Results saved in DynamoDB tables with logs available in CloudWatch.)
 
-## 📥 Getting Started
-1️⃣ Clone this repo.
-2️⃣ Follow the LAYER-INSTALLATION.md guide to set up Lambda layers for Python and Node.js dependencies.
-3️⃣ Deploy the Initiator and Crawler Lambdas via S3 or AWS Console.
-4️⃣ Start crawling by triggering the Initiator Lambda with a root URL.
+##  Getting Started
+1. Clone this repo.
+2. Follow the [INITIATOR-LAYER-INSTALLATION.md](layers/Initiator-python-layer/LAYER-INSTALLATION.md) and [CRAWLER-LAYER-INSTALLATION.md](layers/Crawler-nodejs-layer/CRAWLER-LAYER-INSTALLATION.md) guide to set up Lambda layers for Python and Node.js dependencies.
+3. Deploy the Initiator and Crawler Lambdas via S3 or AWS Console.
+4. Start crawling by triggering the Initiator Lambda with a root URL.
 
 ## 🏆 Key Achievements
-✅ Solved AWS Lambda cold-start & Puppeteer rendering delays
-✅ Enabled crawling of React dynamic routes
-✅ Designed for scalability: parallel Lambda executions
-✅ Cost-optimized and production-ready
+- Solved AWS Lambda cold-start & Puppeteer rendering delays
+- Enabled crawling of React dynamic routes
+- Designed for scalability: parallel Lambda executions
+- Cost-optimized and production-ready
 
 ## 🧑‍💻 Author
-👋 Milos Faktor
-💼 LinkedIn • 🗂️ Portfolio
+👋 Milos Faktor 💼 [LinkedIn](https://linkedin.com/in/your-link)
 
 Special thanks to BeABetterDev for the original Python implementation.
 
