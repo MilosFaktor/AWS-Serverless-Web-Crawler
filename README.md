@@ -119,3 +119,6 @@ Special thanks to BeABetterDev for the original Python implementation.
 
 ### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
 👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
+
+### Do you want to see all screenshots from project? 
+👉 [All screenshots](docs/screenshots/*)
