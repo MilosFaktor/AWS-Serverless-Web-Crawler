@@ -77,27 +77,27 @@ We use the prebuilt package from [Sparticuz Chromium v130.0.0](https://github.co
 ## Install Instructions
 1. **Download Sparticuz Chromium**
 
-Download the prebuilt release:
+- Download the prebuilt release:
 
-File: `chromium-v130.0.0-layer.zip`
+- File: `chromium-v130.0.0-layer.zip`
 
 2. **Upload to AWS Lambda**
 
-Go to AWS Lambda > Layers.
+- Go to AWS Lambda > Layers.
 
-Click Create layer.
+- Click Create layer.
 
-Name it chromium-layer.
+- Name it chromium-layer.
 
-Upload `chromium-v130.0.0-layer.zip.`
+- Upload `chromium-v130.0.0-layer.zip.`
 
-Set Runtime: Node.js 20.x.
+- Set Runtime: Node.js 20.x.
 
 3. **Attach to Lambda Function**
 
-In your Crawler Lambda Function:
+- In your Crawler Lambda Function:
 
-Go to Code > Layers > Add a Layer.
+- Go to Code > Layers > Add a Layer.
 
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
