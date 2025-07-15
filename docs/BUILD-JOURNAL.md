@@ -273,11 +273,13 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
   Best Memory Setting: 812MB
   Reserved Concurrency: 20
   Result: Reduced crawl time from ~60s → ~12s per URL
+
   <img src="screenshots/34.5- power tuning charts 512-1024 range searching for cost optimization.png" width="750">
 
 ##  Final Deployment
 
 - Environment Variables: Configured REGION, SQS_URL, MAX_DEPTH, and TIMEOUT for dynamic parameter control.
+
 <img src="screenshots/35.2- ENV .png" width="750">
 
 ### Lambda Aliases:
@@ -288,8 +290,10 @@ Used AWS Lambda Power Tuning (Step Functions) to find the optimal memory and cos
 
 Successfully crawled:
   - My domain: cloudnecessities.com
+
   <img src="screenshots/31.0- Crawling my website cloudneccesities.com.png" width="750">
   - Test site: drugastrana.rs
+  
   <img src="screenshots/31.5-DynamoDB - End of Crawl.png" width="750">
 
 Both runs extracted all intended links dynamically.
