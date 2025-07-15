@@ -79,7 +79,7 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Chose runtime Node.js.
   - Selected “Create a new role” and attached “SQS Poller role” and “Simple microservice permissions” from AWS templates.
 <img src="screenshots/6.2-eddited IAM policy for Crawler Lambda role.png" width="750">
-<img src="screenshots/3-Crawler Lambda.com.png" width="750">
+<img src="screenshots/3-Crawler Lambda.png" width="750">
 
 ### ✅ DynamoDB Table
 - Table Name: VisitedURLs
