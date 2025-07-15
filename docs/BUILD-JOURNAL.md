@@ -1,13 +1,11 @@
-#📓 Build Journal: Serverless Web Crawler
+# 📓 Build Journal: Serverless Web Crawler
 This build journal documents the full technical journey of designing and deploying a Serverless Web Crawler on AWS. It captures the architecture, challenges, iterations, and lessons learned during development.
 
 ## 🛠️ Step 1: Preparing a Website to Crawl
 As the first step, I needed a website to test the crawler.
 I already owned a domain and had an existing static webpage (a simple React app) hosted in S3.
 To make the crawler more robust, I build a new React app with React Router for client-side dynamic navigation and upload it to S3.
-![Diagram](screenshots/0-diagram.png)
-<img src="screenshots/0-diagram.png" width="500">
-
+<img src="screenshots/0-diagram.png" width="750">
 
 ## React App Setup:
 1. **Create React app:**
@@ -31,8 +29,9 @@ To make the crawler more robust, I build a new React app with React Router for c
 6. **Create CloudFront invalidation (/*) to refresh the cache.**
 - First attempt failed (white page).
 - Fixed by clearing browser cache and issuing another invalidation.
+<img src="screenshots/2- domain loading correct webpage through cloudfront.png" width="750">
 
-# ✅ Result: Static site deployed and ready for testing.
+### ✅ Result: Static site deployed and ready for testing.
 
 ## Step 2: Web Crawler Functionality
 The architecture revolves around two Lambda functions and AWS services for orchestration:
@@ -78,12 +77,14 @@ The architecture revolves around two Lambda functions and AWS services for orche
   - Navigated to Lambda > Create Function.
   - Chose runtime Node.js.
   - Selected “Create a new role” and attached “SQS Poller role” and “Simple microservice permissions” from AWS templates.
+<img src="screenshots/6.2-eddited IAM policy for Crawler Lambda role.png" width="750">
 
 ✅ **DynamoDB Table**
 - Table Name: VisitedURLs
 - Partition Key: url
 - Sort Key: runID
 - Capacity Mode: On-Demand (pay-per-request).
+<img src="screenshots/4-DynamoDB.png" width="750">
 
 ✅ **SQS and DLQ Setup**
 - Primary Queue: For passing URLs to the Crawler Lambda.
@@ -268,6 +269,7 @@ Successfully crawled:
 
 Both runs extracted all intended links dynamically.
 
+📸 [View Full Screenshot Gallery](screenshots/)
 🎥 Demo Video: (linked in repository)
 📊 CloudWatch metrics show improved cost and performance after optimizations.
 
