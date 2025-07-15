@@ -5,7 +5,7 @@ This build journal documents the full technical journey of designing and deployi
 As the first step, I needed a website to test the crawler.
 I already owned a domain and had an existing static webpage (a simple React app) hosted in S3.
 To make the crawler more robust, I build a new React app with React Router for client-side dynamic navigation and upload it to S3.
-![Diagram](docs/screenshots/0-diagram.png)
+![Diagram](screenshots/0-diagram.png)
 
 ## React App Setup:
 1. **Create React app:**
