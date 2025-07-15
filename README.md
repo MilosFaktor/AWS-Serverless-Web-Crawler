@@ -102,7 +102,7 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 
 ##  Getting Started
 1. Clone this repo.
-2. Follow the [INITIATOR-LAYER-INSTALLATION.md](layers/Initiator-python-layer/LAYER-INSTALLATION.md) and [CRAWLER-LAYER-INSTALLATION.md](layers/Crawler-nodejs-layer/CRAWLER-LAYER-INSTALLATION.md) guide to set up Lambda layers for Python and Node.js dependencies.
+2. Follow the [INITIATOR-LAYER-INSTALLATION.md](layers/Initiator-python-layer/INITIATOR-LAYER-INSTALLATION.md) and [CRAWLER-LAYER-INSTALLATION.md](layers/Crawler-nodejs-layer/CRAWLER-LAYER-INSTALLATION.md) guide to set up Lambda layers for Python and Node.js dependencies.
 3. Deploy the Initiator and Crawler Lambdas via S3 or AWS Console.
 4. Start crawling by triggering the Initiator Lambda with a root URL.
 
