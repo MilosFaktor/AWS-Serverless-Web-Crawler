@@ -2,8 +2,8 @@
 Watch the full crawler in action on LinkedIn:  
 👉 [Watch Demo Video](https://www.linkedin.com/in/milos-faktor-78b429255/)
 
-### 📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
-Check out the [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
+### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 
 # 🕷️ Serverless Web Crawler on AWS
 
