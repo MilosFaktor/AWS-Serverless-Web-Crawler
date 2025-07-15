@@ -1,6 +1,6 @@
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
-👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+👉 [Watch Demo Video](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7350978672381616128?collapsed=1)
 
 # 📓 Build Journal: Serverless Web Crawler
 
