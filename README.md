@@ -99,4 +99,4 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 Special thanks to BeABetterDev for the original Python implementation.
 
 📘 Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
-Check out the [BUILD-JOURNAL.md](./BUILD-JOURNAL.md)
+Check out the [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
