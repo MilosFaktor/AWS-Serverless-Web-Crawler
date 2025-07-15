@@ -1,6 +1,6 @@
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
-👉 [Watch Demo Video](https://www.linkedin.com/in/milos-faktor-78b429255/)
+👉 [Watch Demo Video](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7350978672381616128?collapsed=1)
 
 ### Do you want to see all screenshots from project? 
 👉 [All screenshots](docs/screenshots/)

@@ -56,7 +56,7 @@ aws s3 cp initiator-layer.zip s3://your-bucket-name/layers/initiator-layer.zip
 
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
-👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+👉 [Watch Demo Video](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7350978672381616128?collapsed=1)
 
 ### Do you want to see all screenshots from project? 
 👉 [All screenshots](docs/screenshots/)

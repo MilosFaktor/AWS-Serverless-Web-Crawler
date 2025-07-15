@@ -308,9 +308,9 @@ Successfully crawled:
 
 Both runs extracted all intended links dynamically.
 
-## 🎥 Demo Video
+### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
-👉 [Watch Demo Video](https://linkedin.com/in/your-link)
+👉 [Watch Demo Video](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7350978672381616128?collapsed=1)
 
 ### Do you want to see all screenshots from project? 
 👉 [All screenshots](docs/screenshots/)
@@ -325,6 +325,13 @@ Python vs JavaScript on Lambda: Puppeteer + Sparticuz Chromium works far better 
 Layer Packaging: Critical to match AWS runtime environments.
 
 Debugging: CloudWatch logs and Lambda Insights were essential for performance tuning.
+
+### 🎥 Demo Video
+Watch the full crawler in action on LinkedIn:  
+👉 [Watch Demo Video](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7350978672381616128?collapsed=1)
+
+### Do you want to see all screenshots from project? 
+👉 [All screenshots](docs/screenshots/)
 
 ## 🧑‍💻 Author
 👋 Milos Faktor 💼 [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)
