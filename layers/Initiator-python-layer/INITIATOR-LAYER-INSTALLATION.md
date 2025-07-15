@@ -1,3 +1,6 @@
+### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
+
 # Lambda Layer: Python Dependencies for Initiator Function
 
 This Lambda layer contains Python dependencies required for the Initiator Lambda function.  
@@ -47,6 +50,9 @@ aws s3 cp initiator-layer.zip s3://your-bucket-name/layers/initiator-layer.zip
 
 - Attach this layer to your Initiator Lambda Function in Code > Layers and add the correct ARN of the layer.
 (You can find the Layer ARN in the Lambda console after creating the layer, under “Versions.”)
+
+### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  

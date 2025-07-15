@@ -1,3 +1,6 @@
+### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
+
 # 🛠 Lambda Layers Installation Guide
 
 This guide explains how to prepare and deploy Lambda layers for the Serverless Web Crawler project.
@@ -98,6 +101,9 @@ We use the prebuilt package from [Sparticuz Chromium v130.0.0](https://github.co
 - In your Crawler Lambda Function:
 
 - Go to Code > Layers > Add a Layer.
+
+### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
+👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 
 ### 🎥 Demo Video
 Watch the full crawler in action on LinkedIn:  
