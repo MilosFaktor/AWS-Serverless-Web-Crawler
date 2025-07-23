@@ -89,6 +89,10 @@ Used AWS Lambda Power Tuning (via Step Functions) to fine-tune memory and execut
 
 ## 📸 Demo
 
+> ⚠️ **Please Note:**  
+> The websites shown in the demo and screenshots (e.g., drugastrana.rs) are used for educational purposes only.  
+> **Do not repeatedly crawl these domains** unless you have explicit permission. Overuse may violate the site's usage policies or impact performance.
+
 ✅ Crawled Localy : cloudnecessities.com
 
 <img src="docs/screenshots/21- code tested locally and its working.png" width="750">
