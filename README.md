@@ -1,7 +1,3 @@
-### 🎥 Demo Video
-Watch the full crawler in action on LinkedIn:  
-👉 [Watch Demo Video](https://www.linkedin.com/embed/feed/update/urn:li:ugcPost:7350978672381616128?collapsed=1)
-
 ### Do you want to see all screenshots from the project?  
 👉 [All screenshots](docs/screenshots/)
 
@@ -12,14 +8,12 @@ Watch the full crawler in action on LinkedIn:
 
 This is **Version 2** of the Serverless Web Crawler — a fully serverless solution that programmatically discovers and retrieves all unique internal links from dynamic or static websites. The crawler is optimized for React-based sites and designed for reliability, cost-efficiency, and AWS-native best practices.
 
-While version 1 was inspired by BeABetterDev's Python implementation, version 2 is re-architected using **AWS SAM** for repeatable deployments and infrastructure-as-code. This version also separates the Initiator and Crawler logic across two distinct Lambdas using different runtimes — Python for orchestration and Node.js for crawling with Puppeteer.
+While version 1 was inspired by BeABetterDev's Python implementation, version 2 is re-architected using **AWS SAM** for repeatable deployments and infrastructure-as-code. The Initiator and Crawler logic across two distinct Lambdas using different runtimes — Python for orchestration and Node.js for crawling with Puppeteer.
 
 ## 🪜 Key Improvements in Version 2
 - **SAM-powered deployments** with templated YAML
 - **Environment variable setup** per Lambda function
-- **Multi-language Lambda functions**: Python (Initiator) + Node.js (Crawler)
 - **Automatic artifact building** via SAM from `requirements.txt` and `package.json`
-- **Reserved concurrency** control to prevent over-invocation and API overloads
 - **Local development support**: test with Dockerized DynamoDB + Lambda
 
 ---
@@ -32,25 +26,23 @@ While version 1 was inspired by BeABetterDev's Python implementation, version 2 
 ## 🎓 Tech Stack & AWS Services
 ```bash
 `Service`                    `Purpose`
+AWS SAM                     Infrastructure as Code
 AWS Lambda                  Initiator (Python) & Crawler (Node.js) handlers
 SQS                         Queue for discovered links
 DynamoDB                    Stores visited links
 CloudWatch                  Logging/debugging
-S3 + CloudFront             Hosts demo/test pages
-Step Functions (optional)   For cost tuning workflows
 ```
 
 ---
 
 ## 🔄 Workflow
-1. **User manually invokes** the Initiator Lambda.
-2. **Initiator Lambda** writes the root URL to DynamoDB and pushes to SQS.
-3. **Crawler Lambda (Node.js + Puppeteer)** pulls URLs from SQS:
+1. **Initiator Lambda** writes the root URL to DynamoDB and pushes to SQS.
+2. **Crawler Lambda (Node.js + Puppeteer)** pulls URLs from SQS:
    - Renders page with Chromium (Sparticuz headless build)
    - Extracts both static `<a href>` and client-side React `<Link>` routes
    - Stores visited URLs in DynamoDB
    - Pushes new unique links to SQS
-4. Process repeats recursively with depth control and throttling.
+3. Process repeats recursively with depth control and throttling.
 
 ---
 
@@ -66,12 +58,29 @@ Step Functions (optional)   For cost tuning workflows
 
 ## 📊 Project Structure
 ```bash
-/initiator-lambda/          # Python Lambda
-/crawler-lambda/            # Node.js + Puppeteer
-/layers/                    # Lambda Layers
-  |- python-layer/          # Python dependencies
-  |- nodejs-layer/          # Node dependencies
-/docs/                      # Screenshots + guides
+./README.md 
+./docs                          # Screenshots and documentation
+└── BUILD-JOURNAL.md
+./serverless-app-sam
+├── Crawler Lambda
+│   ├── index.mjs
+│   ├── package.json            # Node.js dependencies including Puppeteer
+│   ├── utils.mjs
+│   └── visitedURL.mjs
+├── Initiator Lambda
+│   ├── initiator.py
+│   ├── models
+│   │   ├── VisitedURL.py
+│   │   └── __init__.py
+│   ├── requirements.txt        # Python dependencies
+│   └── utilities
+│       ├── __init__.py
+│       └── util.py
+├── __init__.py
+├── events
+│   └── event.json          # Sample event for local testing of Initiator Lambda / needs to be changed
+├── samconfig.toml            # SAM configuration file
+└── template.yaml               # SAM template defining the infrastructure
 ```
 
 ---
@@ -91,14 +100,28 @@ Screenshots and exact commands coming in future documentation updates.
 Version 2 includes:
 - DLQ (Dead Letter Queue) for failed messages (testing pending)
 - Planned support for API Gateway + IP-based rate limiting in v3
-- IAM-based separation of permissions for Initiator vs Crawler
+- Building CI/CD pipeline for automated testing and deployment
 
 ---
 
 ## 🏆 Achievements
 - Crawler works against dynamic React pages with nested routers
-- Cold starts, concurrency, and size limits resolved
-- SAM enables clean, reproducible, modular deployments
+- Cold starts (39.5s), concurrency, and size limits resolved
+- SAM enables clean, reproducible, modular deployments !!!
+
+## Screenshots
+
+<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
+
+<img src="docs/screenshots/7 - CloudFromation stack created.png" width="750"> 
+
+<img src="docs/screenshots/10 - Initiator.png" width="750">
+
+<img src="docs/screenshots/11 - Crawler.png" width="750">
+
+<img src="docs/screenshots/8 - dynamoDB after crawl.png" width="750">
+
+<img src="docs/screenshots/9 - CloudWatch metrics.png" width="750">
 
 ---
 
@@ -114,3 +137,5 @@ Built and tested in Denmark, shared with the world.
 
 ### Do you want to see all screenshots from the project?  
 👉 [All screenshots](docs/screenshots/)
+
+#AWS #Serverless #AWSSAM #LambdaFunctions #InfrastructureAsCode #WebCrawler #Python #NodeJS #Puppeteer #DynamoDB #SQS #CloudWatch #DevOps #OpenSourceProject #BuildInPublic #LearningInPublic #CI_CD #CloudDevelopment #ReactCrawler #DynamicWebScraping #FullStackServerless #MilosFaktor #TechPortfolio

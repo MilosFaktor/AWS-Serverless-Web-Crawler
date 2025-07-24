@@ -290,3 +290,21 @@ directory/*
 
 SECURITY.md
 ignored/*
+
+# Large media files that exceed GitHub limits
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.wmv
+*.flv
+*.webm
+
+# Specifically ignore RAW video files
+**/*RAW*.mp4
+**/*RAW*.mov
+**/*RAW*.avi
+
+# Large files over 50MB
+**/*.mp4
+**/*.mov

@@ -4,6 +4,10 @@ This journal documents the complete journey of developing **Version 2** of the S
 
 ---
 
+## 🧠 Architecture Diagram
+
+<img src="screenshots/0-diagram.png" width="750">
+
 ## 🛠️ PHASE 1: Preparing the Repo & SAM Setup
 
 ### 🔹 Objective
@@ -12,56 +16,40 @@ Rebuild the previously working crawler from scratch using **AWS SAM (Serverless 
 ### 🔹 Project Structure Created
 
 ```bash
-serverless-crawler-v2/
-├── template.yaml                  # SAM infrastructure template
-├── initiator/                     # Python Lambda
-│   ├── app.py
-│   ├── requirements.txt
-│   └── __init__.py
-├── crawler/                       # Node.js Lambda
-│   ├── index.js
-│   └── package.json
-└── README.md
+./README.md 
+./docs
+└── BUILD-JOURNAL.md
+./serverless-app-sam
+├── Crawler Lambda
+│   ├── index.mjs
+│   ├── package.json            # Node.js dependencies including Puppeteer
+│   ├── utils.mjs
+│   └── visitedURL.mjs
+├── Initiator Lambda
+│   ├── initiator.py
+│   ├── models
+│   │   ├── VisitedURL.py
+│   │   └── __init__.py
+│   ├── requirements.txt        # Python dependencies
+│   └── utilities
+│       ├── __init__.py
+│       └── util.py
+├── __init__.py
+├── events
+│   └── event.json          # Sample event for local testing of Initiator Lambda / needs to be changed
+├── samconfig.toml            # SAM configuration file
+└── template.yaml               # SAM template defining the infrastructure
 ```
 
-### 🔹 `sam init` Not Used
-This project was created **manually** (no `sam init`) to maintain full control over file structure.
-
----
-
-## 🧪 PHASE 2: Local Development & First Tests
-
-### 🔹 Environment Setup
-
-- Created `.env.json` file with:
-```json
-{
-  "REGION": "eu-central-1",
-  "SQS_URL": "https://sqs.eu-central-1.amazonaws.com/123456789012/MyQueue",
-  "MAX_DEPTH": "2",
-  "TIMEOUT": "10000"
-}
-```
-
-### 🔹 Local Testing
-Used:
-```bash
-sam local invoke InitiatorFunction --env-vars .env.json -e events/test-event.json
-sam local invoke CrawlerFunction --env-vars .env.json -e events/test-event-crawler.json
-```
-
-- Debugging inside Docker container worked well.
-- Created Docker volume for DynamoDB local (future use).
-- Verified logs in terminal — Puppeteer launched correctly.
-
----
-
-## ⚙️ PHASE 3: SAM Deployment
+## ⚙️ PHASE 2: SAM Deployment
 
 ### 🔹 Build
 ```bash
+cd serverless-app-sam/
 sam build
 ```
+
+<img src="screenshots/2 - after sam build.png" width="750">
 
 - Automatically packaged Python and Node.js functions using `requirements.txt` and `package.json`.
 
@@ -69,6 +57,28 @@ sam build
 ```bash
 sam deploy --guided
 ```
+
+<img src="screenshots/3 - sam deploy creating resources.png" width="750">
+
+
+### Setting default arguments for 'sam deploy'
+        =========================================
+        Stack Name [serverless-app-crawler-sam]: ***"Enter your stack name"/"press Enter for default"***
+        AWS Region [eu-north-1]: ***"Enter your region"/"press Enter for default"***
+        #Shows you resources changes to be deployed and require a 'Y' to initiate deploy
+        Confirm changes before deploy [Y/n]: Y
+        #SAM needs permission to be able to create roles to connect to the resources in your template
+        Allow SAM CLI IAM role creation [Y/n]: Y
+        #Preserves the state of previously provisioned resources when an operation fails
+        Disable rollback [y/N]: N
+        Save arguments to configuration file [Y/n]: Y
+        SAM configuration file [samconfig.toml]: ***"Enter your config file"/"press Enter for default"***
+        SAM configuration environment [default]: ***"Enter your config environment"/"press Enter for default"***
+
+        At the end of the deployment, you will see: Deploy this changeset? [y/N]: y
+
+<img src="screenshots/6 - SAM deployed resources.png" width="750">       
+
 
 - Provided stack name, region, S3 bucket, capabilities.
 - IAM roles created and connected.
@@ -82,66 +92,58 @@ sam deploy --guided
 
 ---
 
-## 🕸️ PHASE 4: Crawling Behavior & Concurrency
+## 🕸️ PHASE 3: Crawling Behavior & Concurrency
 
 ### 🔹 Reserved Concurrency
 ```yaml
-ReservedConcurrentExecutions: 1
+ReservedConcurrentExecutions: 1  # Initiator Lambda
+
+ReservedConcurrentExecutions: 5  # Crawler Lambda
 ```
 
-- This fixed parallel execution bugs in Crawler Lambda.
-- Prevents simultaneous Puppeteer containers from overloading small Lambda instance.
-- Helped avoid rate-limiting or runaway costs during testing.
-
-### 🔹 React Router Page Support
-- Crawled a React-based site deployed to S3.
-- Dynamic `<Link to="..." />` pages were fully parsed.
-- Puppeteer + Sparticuz Chromium handled navigation & JS rendering well.
+- This fixed many parallel execution issues in Crawler Lambda while testing and debugging.
 
 ---
 
-## 🛡️ PHASE 5: DLQ & Retry Behavior
-
-### 🔹 Dead Letter Queue
-- SAM template defined DLQ + redrive policy.
-- Lambda async failure routed correctly to DLQ.
-- Manually tested DLQ message contents in AWS Console.
-- Future: Add alert or automated redrive script.
-
----
-
-## 📁 PHASE 6: Local Debugging, Versioning & Git
+## 📁 PHASE 4: Versioning & Git
 
 ### 🔹 Git Branching Strategy
 - Used `main` for latest stable version.
 - Created `v1`, `v2`, `crawler-dev` branches.
 - Committed code regularly during SAM testing phases.
 
-### 🔹 SAM Debug Tips
-
-- Use `sam local invoke` for isolated Lambda testing.
-- Environment variables are loaded from `.env.json`.
-- Log output appears in Docker stdout.
-- Avoid `sam start-api` — not needed for SQS/Async triggers.
-
----
-
-## ✅ PHASE 7: Deployment Outcome
+## ✅ PHASE 5: Deployment Outcome
 
 ### 🔹 Successfully Crawled:
-- `cloudnecessities.com` (my site)
-- `drugastrana.rs` (static/dynamic mix)
+- `drugastrana.rs` 
 
 All links saved to DynamoDB.
 Crawler gracefully shut down after max depth.
-CloudWatch showed optimized Lambda runtimes (~12s).
+CloudWatch showed optimized Lambda runtimes (39.5s - COLD ).
+
+## Screenshots
+
+<img src="screenshots/7 - CloudFromation stack created.png" width="750"> 
+
+<img src="screenshots/10 - Initiator.png" width="750">
+
+<img src="screenshots/12 - SQS messages.png" width="750">
+
+<img src="screenshots/11 - Crawler.png" width="750">
+
+<img src="screenshots/8 - dynamoDB after crawl.png" width="750">
+
+<img src="screenshots/9 - CloudWatch metrics.png" width="750">
+
+<img src="screenshots/13 - stack delete initiated.png" width="750">
+
 
 ---
 
 ## 🧠 LESSONS LEARNED
 
 - ✅ SAM automatically installs Python/Node dependencies — no need for CodeBuild.
-- ✅ Setting `ReservedConcurrentExecutions` to 1 prevents overloading Puppeteer.
+- ✅ Using `sam build` and `sam deploy` simplifies the process.
 - ✅ Node.js + Puppeteer + Sparticuz Chromium beats Python + Selenium on AWS Lambda.
 - ✅ DLQ config is essential to capture failed crawls.
 - ✅ Using `sam local invoke` is perfect for testing individual Lambdas.
@@ -161,24 +163,17 @@ CloudWatch showed optimized Lambda runtimes (~12s).
 - You can configure the crawl depth using the `MAX_DEPTH` environment variable.  
   - Example: `MAX_DEPTH=2` limits crawling to two levels deep.
 
-> ⚠️ **Important:** If you accidentally launch the crawler on a large-scale site like Google or Wikipedia:
-> - You might quickly exceed your Lambda free tier.
-> - The site may throttle or block your IP.
-> - You could unintentionally generate significant traffic.
-
 🛑 Do not crawl high-traffic or sensitive websites without **explicit permission**.
 
-This project is designed for safe experimentation on **your own site** or small test environments only. In future versions, additional safeguards like **rate limiting**, **robots.txt checking**, or **IP throttling** may be added.
+This project is designed for safe experimentation on **your own site** or small test environments only. In future versions, additional safeguards like **rate limiting** or **IP throttling** may be added.
 
 ---
 
 ## 🛣️ FUTURE PLANS
 
 - Add API Gateway trigger for user input (root URL)
-- Add IP-based rate limiting (via API Gateway or Lambda throttle)
-- Add optional S3 output with crawled result summary
-- Use Step Functions for depth-based loop control
-- Create cloudformation template for one-click deploy
+- Add IP-based rate limiting (via API Gateway or Lambda throttling)
+- Create CI/CD pipeline for automated deployments
 
 ---
 
@@ -192,7 +187,7 @@ sam local invoke InitiatorFunction --env-vars .env.json -e events/test-event.jso
 sam local invoke CrawlerFunction --env-vars .env.json -e events/test-event-crawler.json
 ```
 
-Trigger `InitiatorFunction` manually with a test event (example.com recommended).
+Trigger `InitiatorFunction` manually with a test event.
 
 ---
 
@@ -202,5 +197,10 @@ Trigger `InitiatorFunction` manually with a test event (example.com recommended)
 🔗 [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)  
 🧠 AWS | Serverless | AI Integration
 
+### Do you want to see all screenshots from the project?  
+👉 [All screenshots](docs/screenshots/)
+
 ---
+
+#AWS #Serverless #AWSSAM #LambdaFunctions #WebCrawler #CloudComputing #Python #NodeJS #Puppeteer #DynamoDB #SQS #CloudWatch #DevOps #InfrastructureAsCode #CICD #BuildInPublic #LearningInPublic #AIIntegration #DeveloperJourney #OpenSource #CloudD
 
