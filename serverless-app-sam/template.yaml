@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  serverless-app-sam
+
+  Sample SAM Template for serverless-Crawler-app-sam  
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 30
+
+Resources:
+  # SQS Queue for crawler tasks (MISSING in your template)
+  CrawlerQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AWS::StackName}-crawler-queue"
+      VisibilityTimeout: 120  # 90 + 30 second buffer
+      MessageRetentionPeriod: 1209600  # 14 days
+      DelaySeconds: 1
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt CrawlerDLQ.Arn
+        maxReceiveCount: 3
+
+  # Dead Letter Queue (MISSING in your template)
+  CrawlerDLQ:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${AWS::StackName}-crawler-dlq"
+
+  InitiatorFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: 'Initiator Lambda/'
+      Handler: initiator.handler
+      Runtime: python3.12  # Keeping Python 3.12 as you requested
+      MemorySize: 128
+      Timeout: 3
+      ReservedConcurrentExecutions: 1
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:  
+          CRAWLER_QUEUE_URL: !Ref CrawlerQueue
+          VISITED_TABLE_NAME: !Ref VisitedURLTable
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CrawlerQueue.QueueName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref VisitedURLTable
+
+  CrawlerFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: 'Crawler Lambda/'
+      Handler: index.handler
+      Runtime: nodejs20.x  
+      MemorySize: 812
+      Timeout: 90 
+      ReservedConcurrentExecutions: 5
+      Architectures:
+        - x86_64
+      Events:
+        CrawlerQueueEvent:  
+          Type: SQS 
+          Properties:
+            Queue: !GetAtt CrawlerQueue.Arn
+            BatchSize: 5
+      Environment:
+        Variables:  
+          CRAWLER_QUEUE_URL: !Ref CrawlerQueue
+          CRAWLER_DLQ_URL: !Ref CrawlerDLQ
+          VISITED_TABLE_NAME: !Ref VisitedURLTable
+          TIME_OUT: 12000 
+          MAX_DEPTH: 3
+      Policies:
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt CrawlerQueue.QueueName
+        - SQSPollerPolicy:
+            QueueName: !GetAtt CrawlerQueue.QueueName
+        - DynamoDBCrudPolicy:
+            TableName: !Ref VisitedURLTable
+
+  VisitedURLTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${AWS::StackName}-visited-urls"
+      AttributeDefinitions:
+        - AttributeName: visitedURL
+          AttributeType: S
+        - AttributeName: runId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: visitedURL
+          KeyType: HASH
+        - AttributeName: runId
+          KeyType: RANGE
+      BillingMode: PAY_PER_REQUEST 
+
+Outputs:
+
+  InitiatorFunction:
+    Description: "Initiator Lambda Function ARN"
+    Value: !GetAtt InitiatorFunction.Arn
+    
+  CrawlerFunction:
+    Description: "Crawler Lambda Function ARN" 
+    Value: !GetAtt CrawlerFunction.Arn
+    
+  CrawlerQueueUrl:
+    Description: "SQS Queue URL"
+    Value: !Ref CrawlerQueue
+

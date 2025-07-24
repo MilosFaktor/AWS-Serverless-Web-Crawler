@@ -1,0 +1,16 @@
+{
+  "name": "crawler-lambda",
+  "version": "1.0.0",
+  "description": "Web crawler Lambda function",
+  "main": "index.mjs",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.687.0",
+    "@aws-sdk/client-sqs": "^3.687.0",
+    "@sparticuz/chromium": "^130.0.0",
+    "puppeteer-core": "^23.7.1",
+    "follow-redirects": "^1.15.9",
+    "tar-fs": "^3.0.6",
+    "uuid": "^11.0.2"
+  }
+}
