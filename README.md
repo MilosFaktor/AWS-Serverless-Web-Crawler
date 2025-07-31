@@ -58,4 +58,4 @@ I also created ddefault IAM roles there, but I know there's from previous exerci
 
 Okay, so I created a new branch. It just features my CICD underscore trigger underscore test, and I modified readme file. I pushed it, and now I'm going to now I'm going to my, I'm going to my github and make a pull request.
 
-new
+Ok, so warning. The filter applies for destination bucket, not for the source bucket of the pull request. A huge warning. Otherwise it seems like everything else is working.
