@@ -54,5 +54,6 @@ codepipeline source ,connection via github app ,so a repository name and default
 
 I created source source and I connected github with a github app and on a pull request in feature slash asterisk will trigger the pipeline and then second one I added the code build and the code build is just just as the build spec the demo is going to be used there and this is a development environmentBut I need to create it separately and then connect it to, I mean the code deploy, no, code build I need to create separately and then put it in, put it into, connect it into the pipeline. So that's it so far,
 
-I also created IAM roles there, but I know there's from previous exercises I did on the CI-CD pipeline there's gonna be some problems, so I'll modify it later. But, okay, I'm going to test, I'm going to do some PR for requests.
+I also created ddefault IAM roles there, but I know there's from previous exercises I did on the CI-CD pipeline there's gonna be some problems, so I'll modify it later. But, okay, I'm going to test, I'm going to do some PR for requests.
 
+Okay, so I created a new branch. It just features my CICD underscore trigger underscore test, and I modified readme file. I pushed it, and now I'm going to now I'm going to my, I'm going to my github and make a pull request.
