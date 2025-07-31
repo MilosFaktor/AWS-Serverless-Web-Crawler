@@ -4,110 +4,8 @@
 ### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
 👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 
-# 🕷️ Serverless Web Crawler on AWS – Version 2
+Notes: 
 
-This is **Version 2** of the Serverless Web Crawler — a fully serverless solution that programmatically discovers and retrieves all unique internal links from dynamic or static websites. The crawler is optimized for React-based sites and designed for reliability, cost-efficiency, and AWS-native best practices.
-
-While version 1 was inspired by BeABetterDev's Python implementation, version 2 is re-architected using **AWS SAM** for repeatable deployments and infrastructure-as-code. The Initiator and Crawler logic across two distinct Lambdas using different runtimes — Python for orchestration and Node.js for crawling with Puppeteer.
-
-## 🪜 Key Improvements in Version 2
-- **SAM-powered deployments** with templated YAML
-- **Environment variable setup** per Lambda function
-- **Automatic artifact building** via SAM from `requirements.txt` and `package.json`
-- **Local development support**: test with Dockerized DynamoDB + Lambda
-
----
-
-## 🧠 Architecture Diagram
-<img src="docs/screenshots/0-diagram.png" width="750">
-
----
-
-## 🎓 Tech Stack & AWS Services
-```bash
-`Service`                    `Purpose`
-AWS SAM                     Infrastructure as Code
-AWS Lambda                  Initiator (Python) & Crawler (Node.js) handlers
-SQS                         Queue for discovered links
-DynamoDB                    Stores visited links
-CloudWatch                  Logging/debugging
-```
-
----
-
-## 🔄 Workflow
-1. **Initiator Lambda** writes the root URL to DynamoDB and pushes to SQS.
-2. **Crawler Lambda (Node.js + Puppeteer)** pulls URLs from SQS:
-   - Renders page with Chromium (Sparticuz headless build)
-   - Extracts both static `<a href>` and client-side React `<Link>` routes
-   - Stores visited URLs in DynamoDB
-   - Pushes new unique links to SQS
-3. Process repeats recursively with depth control and throttling.
-
----
-
-## 🚀 Notable Features in Version 2
-- **Environment Variables**: Set at deploy time using SAM templates
-- **Reserved Concurrency**: Prevents flooding API targets or exceeding limits
-- **Layer Auto-Building**: SAM detects `package.json` or `requirements.txt` and builds
-- **Git Monorepo Strategy**:
-   - `main` branch points to latest working version
-   - `v1`, `v2`, etc. branches freeze prior versions for LinkedIn/blog reference
-
----
-
-## 📊 Project Structure
-```bash
-./README.md 
-./docs                          # Screenshots and documentation
-└── BUILD-JOURNAL.md
-./serverless-app-sam
-├── Crawler Lambda
-│   ├── index.mjs
-│   ├── package.json            # Node.js dependencies including Puppeteer
-│   ├── utils.mjs
-│   └── visitedURL.mjs
-├── Initiator Lambda
-│   ├── initiator.py
-│   ├── models
-│   │   ├── VisitedURL.py
-│   │   └── __init__.py
-│   ├── requirements.txt        # Python dependencies
-│   └── utilities
-│       ├── __init__.py
-│       └── util.py
-├── __init__.py
-├── events
-│   └── event.json          # Sample event for local testing of Initiator Lambda / needs to be changed
-├── samconfig.toml            # SAM configuration file
-└── template.yaml               # SAM template defining the infrastructure
-```
-
----
-
-## 🔧 Local Dev & Testing
-You can:
-- Run **Dockerized DynamoDB** locally
-- Spin up Lambda functions for manual testing
-- Simulate SQS + DynamoDB calls without cloud deployment
-- Validate `template.yaml` with `sam validate`
-
-Screenshots and exact commands coming in future documentation updates.
-
----
-
-## 🛡️ Security, DLQ, and API Rate Limits
-Version 2 includes:
-- DLQ (Dead Letter Queue) for failed messages (testing pending)
-- Planned support for API Gateway + IP-based rate limiting in v3
-- Building CI/CD pipeline for automated testing and deployment
-
----
-
-## 🏆 Achievements
-- Crawler works against dynamic React pages with nested routers
-- Cold starts (39.5s), concurrency, and size limits resolved
-- SAM enables clean, reproducible, modular deployments !!!
 
 ## Screenshots
 
@@ -138,4 +36,23 @@ Built and tested in Denmark, shared with the world.
 ### Do you want to see all screenshots from the project?  
 👉 [All screenshots](docs/screenshots/)
 
-#AWS #Serverless #AWSSAM #LambdaFunctions #InfrastructureAsCode #WebCrawler #Python #NodeJS #Puppeteer #DynamoDB #SQS #CloudWatch #DevOps #OpenSourceProject #BuildInPublic #LearningInPublic #CI_CD #CloudDevelopment #ReactCrawler #DynamicWebScraping #FullStackServerless #MilosFaktor #TechPortfolio
+
+
+Notes: 
+
+I’ve been thinking through the CI/CD pipeline setup for my serverless WebCrawler project, and here’s the plan I’m leaning toward:
+
+When I open a pull request, it’ll trigger a CodeBuild job that deploys the whole stack to a dev environment using AWS SAM (with a separate stack name).
+
+In that dev setup, it’ll run some basic tests — like invoking a Lambda or checking that a response comes back OK.
+
+If the tests pass, I’ll submit it for review (like you mentioned with reviewers).
+
+After it’s approved and merged into main, it’ll deploy to production — potentially using something like canary or linear rollout later on.
+
+codepipeline source ,connection via github app ,so a repository name and default branch is main, but then in a webhook events I specified event type pull request, events for pull request. It's when pull request is created and then start pipeline under these conditions, filter type branches or patterns and I input it feature slash asterisks and then file paths. I don't need file paths so for now.
+
+I created source source and I connected github with a github app and on a pull request in feature slash asterisk will trigger the pipeline and then second one I added the code build and the code build is just just as the build spec the demo is going to be used there and this is a development environmentBut I need to create it separately and then connect it to, I mean the code deploy, no, code build I need to create separately and then put it in, put it into, connect it into the pipeline. So that's it so far,
+
+I also created IAM roles there, but I know there's from previous exercises I did on the CI-CD pipeline there's gonna be some problems, so I'll modify it later. But, okay, I'm going to test, I'm going to do some PR for requests.
+
