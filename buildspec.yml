@@ -1,0 +1,30 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.13
+    commands:
+      - sudo yum update -y
+      #- echo "Installing AWS SAM CLI"
+      #- sudo yum install python3-pip -y
+      #- echo "Installed pip3"
+      #- pip3 install aws-sam-cli
+      #- echo "Installed AWS SAM CLI"
+
+  pre_build:
+    commands:
+      - echo "Environment: $ENVIRONMENT"
+      - sam --version
+      - cd serverless-app-sam/
+      - sam validate
+      - echo "Validated SAM template"
+      - echo "End of pre-build phase"
+
+  build:
+    commands:
+      #- sam build
+
+  post_build:
+    commands:
+      #- sam deploy --stack-name webcrawler-dev --capabilities CAPABILITY_IAM --region eu-central-1 --no-confirm-changeset
