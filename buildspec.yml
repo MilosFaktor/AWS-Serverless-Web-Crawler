@@ -10,7 +10,7 @@ phases:
 
   pre_build:
     commands:
-      - echo "Environment: $ENVIRONMENT"
+      - echo "$ENVIRONMENT"
       - python3 --version
       - pip3 --version
       - cd serverless-app-sam/
