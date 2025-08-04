@@ -3,16 +3,16 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      python: 3.11
+      python: 3.12
     commands:
       - echo "Updating system packages"
       - sudo yum update -y
 
   pre_build:
     commands:
-      - echo "$ENVIRONMENT"
-      - python3 --version
-      - pip3 --version
+      - echo "$Enviroment"
+      #- python3 --version
+      #- pip3 --version
       - cd serverless-app-sam/
       - sam --version
       - sam validate

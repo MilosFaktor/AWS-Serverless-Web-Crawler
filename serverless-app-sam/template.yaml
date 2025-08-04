@@ -34,7 +34,7 @@ Resources:
     Properties:
       CodeUri: 'Initiator Lambda/'
       Handler: initiator.handler
-      Runtime: python3.12  # Keeping Python 3.12 as you requested
+      Runtime: python3.11  
       MemorySize: 128
       Timeout: 3
       ReservedConcurrentExecutions: 1
