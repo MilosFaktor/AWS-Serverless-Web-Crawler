@@ -1,12 +1,6 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      python: 3.12
-    commands:
-      - echo "Updating system packages"
-      - sudo yum update -y
 
   pre_build:
     commands:
@@ -14,16 +8,16 @@ phases:
       #- python3 --version
       #- pip3 --version
       - cd serverless-app-sam/
-      - sam --version
       - sam validate
       - echo "✅ SAM template validated"
 
   build:
     commands:
       - sam build
+      - echo "Build complete"
 
   post_build:
     commands:
       - echo "Build complete"
       # Optional deployment if needed:
-      # - sam deploy --stack-name webcrawler-dev --capabilities CAPABILITY_IAM --region eu-central-1 --no-confirm-changeset
+      # - sam deploy --stack-name "serverless-app-crawler-sam-$Enviroment" --capabilities CAPABILITY_IAM --region eu-north-1 --no-confirm-changeset
