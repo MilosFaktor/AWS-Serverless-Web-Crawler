@@ -4,20 +4,21 @@ phases:
 
   pre_build:
     commands:
-      - echo "$Enviroment"
-      #- python3 --version
-      #- pip3 --version
       - cd serverless-app-sam/
       - sam validate
       - echo "✅ SAM template validated"
 
   build:
     commands:
+      - echo "AWS SAM starting the build."
       - sam build
-      - echo "Build complete"
+      - echo "Deploying to env '$Environment'"
+      - sam deploy --config-env $Environment 
+      # Extract stack name from samconfig.toml based on environment
+      - STACK_NAME=$(grep -A 10 "\[$Environment.deploy.parameters\]" samconfig.toml | grep "stack_name" | cut -d'"' -f2)
+      - echo "Stack name: $STACK_NAME"
 
   post_build:
     commands:
-      - echo "Build complete"
-      # Optional deployment if needed:
-      # - sam deploy --stack-name "serverless-app-crawler-sam-$Enviroment" --capabilities CAPABILITY_IAM --region eu-north-1 --no-confirm-changeset
+      # sam delete --config-env dev --no-prompts
+
