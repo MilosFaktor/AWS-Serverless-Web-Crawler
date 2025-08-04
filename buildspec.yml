@@ -20,5 +20,5 @@ phases:
 
   post_build:
     commands:
-      # sam delete --config-env dev --no-prompts
+      - sam delete --config-env dev --no-prompts
 
