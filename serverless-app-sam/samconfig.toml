@@ -18,7 +18,7 @@ stack_name = "serverless-app-crawler-sam-dev"
 parameter_overrides = "Environment=dev"
 capabilities = "CAPABILITY_IAM"
 resolve_s3 = true
-s3_prefix = "serverless-app-crawler-sam"
+s3_prefix = "serverless-app-crawler-sam-dev"
 image_repositories = []
 confirm_changeset = false
 no_confirm_changeset = true
@@ -29,7 +29,7 @@ stack_name           = "serverless-app-crawler-sam-prod"
 parameter_overrides  = "Environment=prod"
 capabilities         = "CAPABILITY_IAM"
 resolve_s3           = true
-s3_prefix            = "serverless-app-crawler-sam"
+s3_prefix            = "serverless-app-crawler-sam-prod"
 image_repositories   = []
 confirm_changeset    = false
 no_confirm_changeset = true

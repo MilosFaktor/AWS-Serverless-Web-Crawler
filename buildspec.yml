@@ -13,9 +13,15 @@ phases:
       - echo "AWS SAM starting the build."
       - sam build
       - echo "Deploying to env '$Environment'"
-      - sam deploy --config-env $Environment 
-      # Extract stack name from samconfig.toml based on environment
-      - STACK_NAME=$(grep -A 10 "\[$Environment.deploy.parameters\]" samconfig.toml | grep "stack_name" | cut -d'"' -f2)
+      # Create unique S3 bucket name based on environment and timestamp
+      - UNIQUE_SUFFIX=$(date +%s | tail -c 6)
+      - S3_BUCKET="aws-sam-cli-managed-${Environment}-${UNIQUE_SUFFIX}"
+      
+      # Deploy with unique bucket
+      - sam deploy --config-env $Environment --s3-bucket $S3_BUCKET --no-confirm-changeset
+      
+      # Get stack name
+      - STACK_NAME="serverless-app-crawler-sam-$Environment"
       - echo "Stack name '$STACK_NAME'"
 
   post_build:
