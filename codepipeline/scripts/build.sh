@@ -9,7 +9,10 @@ sam validate
 echo "SAM template validated"
 
 echo "Building SAM application..."
-sam build --cached --parallel
+sam build
 echo "SAM build completed successfully"
+
+echo "Build artifacts created:"
+ls -la .aws-sam/build/
 
 echo "Build script completed successfully!"

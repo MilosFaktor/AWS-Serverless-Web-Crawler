@@ -10,7 +10,6 @@ phases:
     commands:
       - ./codepipeline/scripts/build.sh
       
-      
   post_build:
     commands:
       - echo "End of build phase"

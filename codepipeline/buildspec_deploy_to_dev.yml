@@ -13,4 +13,9 @@ phases:
   post_build:
     commands:
       - echo "Deployment to '$Environment' completed successfully."
-      #- sam delete --config-env dev --no-prompts
+
+  artifacts:
+    files:
+      - '**/*'
+    base-directory: serverless-app-sam
+    name: BuildArtifacts
