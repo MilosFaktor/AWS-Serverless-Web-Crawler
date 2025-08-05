@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - cd serverless-app-sam/
+      - echo "AWS SAM starting the build."
+
+  build:
+    commands:
+      - sam validate
+      - echo "✅ SAM template validated"
+      - sam build
+      
+      
+  post_build:
+    commands:
+      - echo "End of build phase"
+
+
