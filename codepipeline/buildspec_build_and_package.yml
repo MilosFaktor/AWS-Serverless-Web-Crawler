@@ -8,7 +8,7 @@ phases:
 
   build:
     commands:
-      - .codepipeline/scripts/build.sh
+      - ./codepipeline/scripts/build.sh
       
       
   post_build:
