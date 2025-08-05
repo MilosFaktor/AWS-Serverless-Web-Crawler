@@ -4,14 +4,11 @@ phases:
 
   pre_build:
     commands:
-      - cd serverless-app-sam/
       - echo "AWS SAM starting the build."
 
   build:
     commands:
-      - sam validate
-      - echo " SAM template validated"
-      - sam build
+      - .codepipeline/scripts/build.sh
       
       
   post_build:
