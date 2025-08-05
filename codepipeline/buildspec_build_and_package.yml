@@ -14,8 +14,8 @@ phases:
     commands:
       - echo "End of build phase"
 
-  artifacts:
-    files:
-      - '**/*'
-    name: BuildArtifact
+artifacts:
+  files:
+    - '**/*'
+  name: BuildArtifact
 
