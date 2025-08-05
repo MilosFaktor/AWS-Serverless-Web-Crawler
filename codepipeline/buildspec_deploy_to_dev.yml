@@ -13,9 +13,3 @@ phases:
   post_build:
     commands:
       - echo "Deployment to '$Environment' completed successfully."
-
-  artifacts:
-    files:
-      - '**/*'
-    base-directory: serverless-app-sam
-    name: BuildArtifacts
