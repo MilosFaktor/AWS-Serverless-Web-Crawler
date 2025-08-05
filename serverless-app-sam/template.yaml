@@ -99,11 +99,9 @@ Resources:
       BillingMode: PAY_PER_REQUEST 
 
 Outputs:
-
   InitiatorFunction:
     Description: "Initiator Lambda Function ARN"
     Value: !GetAtt InitiatorFunction.Arn
-    Name: 
     
   CrawlerFunction:
     Description: "Crawler Lambda Function ARN" 
@@ -111,9 +109,20 @@ Outputs:
     
   CrawlerQueueUrl:
     Description: "SQS Queue URL"
-    Value: !Ref CrawlerQueue.Arn
-  
-  VisitedURLTable:
-    Description: "Visited URL DynamoDB Table Name"
-    Value: !Ref VisitedURLTable.Arn
-
+    Value: !Ref CrawlerQueue
+    
+  CrawlerQueueArn:
+    Description: "SQS Queue ARN"
+    Value: !GetAtt CrawlerQueue.Arn
+    
+  VisitedTableName:
+    Description: "DynamoDB Table Name"
+    Value: !Ref VisitedURLTable
+    
+  VisitedTableArn:
+    Description: "DynamoDB Table ARN"
+    Value: !GetAtt VisitedURLTable.Arn
+    
+  StackName:
+    Description: "Stack Name"
+    Value: !Ref AWS::StackName
