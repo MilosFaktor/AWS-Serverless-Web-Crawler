@@ -18,6 +18,7 @@ artifacts:
   files:
     - 'serverless-app-sam/cfn-outputs.json'
     - 'serverless-app-sam/cfn-outputs-simple.json'
+    - 'serverless-app-sam/events/**/*'
     - 'scripts/**/*'
     - 'codepipeline/**/*'
   name: DeployArtifacts
