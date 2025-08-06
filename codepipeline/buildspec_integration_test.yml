@@ -13,6 +13,7 @@ phases:
 
   post_build:
     commands:
+      - cd serverless-app-sam 
       - echo "📋 Test Summary:"
       - echo "📄 Lambda Response:"
       - cat events/response_initiator_lambda.json || echo "No lambda response"
