@@ -6,7 +6,7 @@ cache:
     - '/root/.npm/**/*'              # npm cache  
     - '/root/.sam/**/*'              # SAM CLI cache
     - 'serverless-app-sam/node_modules/**/*'            # Node dependencies
-    - 'serverless-app-sam/.aws-sam/deps/**/*'  # Project-specific SAM deps
+    - 'serverless-app-sam/.aws-sam/deps/**/*'  # Project-specific SAM deps.
 
 phases:
   install:
