@@ -1,10 +1,5 @@
 version: 0.2
 
-cache:
-  paths:
-    - '.aws/**/*'              # AWS CLI cache
-    - '.sam/**/*'              # SAM CLI cach
-
 phases:
 
   pre_build:
