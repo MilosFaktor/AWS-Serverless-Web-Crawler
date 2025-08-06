@@ -1,6 +1,19 @@
 version: 0.2
 
+cache:
+  paths:
+    - '/root/.cache/pip/**/*'        # Python pip cache
+    - '/root/.aws/**/*'              # AWS CLI cache
+    - '/root/.sam/**/*'              # SAM CLI cach
+
 phases:
+  install:
+    runtime-versions:
+      python: 3.11
+      nodejs: 20
+    commands:
+      - echo "📦 Installing SAM CLI..."
+      - pip install aws-sam-cli==1.142.1
 
   pre_build:
     commands:
