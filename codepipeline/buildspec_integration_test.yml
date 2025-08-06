@@ -6,14 +6,6 @@ cache:
     - '/root/.npm/**/*'              # npm cache (for jq, etc.)
 
 phases:
-  install:
-    runtime-versions:
-      python: 3.11
-      nodejs: 20
-    commands:
-      - echo "📦 Installing test dependencies..."
-      - apt-get update -y
-      - apt-get install -y jq          # For JSON parsing in post_build
 
   pre_build:
     commands:

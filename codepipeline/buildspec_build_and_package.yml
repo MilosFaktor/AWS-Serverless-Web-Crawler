@@ -10,9 +10,6 @@ cache:
 
 phases:
   install:
-    runtime-versions:
-      python: 3.11
-      nodejs: 20                    
     commands:
       - echo "📦 Installing SAM CLI..."
       - pip install aws-sam-cli==1.142.1
