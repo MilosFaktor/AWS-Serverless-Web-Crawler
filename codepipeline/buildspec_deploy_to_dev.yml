@@ -2,7 +2,6 @@ version: 0.2
 
 cache:
   paths:
-    - '.cache/pip/**/*'        # Python pip cache
     - '.aws/**/*'              # AWS CLI cache
     - '.sam/**/*'              # SAM CLI cach
 
