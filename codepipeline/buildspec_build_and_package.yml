@@ -2,9 +2,9 @@ version: 0.2
 
 cache:
   paths:
-    - '/root/.cache/pip/**/*'        # Python pip cache
-    - '/root/.npm/**/*'              # npm cache  
-    - '/root/.sam/**/*'              # SAM CLI cache
+    - '.cache/pip/**/*'        # Python pip cache
+    - '.npm/**/*'              # npm cache
+    - '.sam/**/*'              # SAM CLI cache
     - 'serverless-app-sam/node_modules/**/*'            # Node dependencies
     - 'serverless-app-sam/.aws-sam/deps/**/*'  # Project-specific SAM deps.
 

@@ -2,8 +2,8 @@ version: 0.2
 
 cache:
   paths:
-    - '/root/.cache/pip/**/*'        # Python pip cache
-    - '/root/.npm/**/*'              # npm cache (for jq, etc.)
+    - '.cache/pip/**/*'        # Python pip cache
+    - '.npm/**/*'              # npm cache (for jq, etc.)
 
 phases:
 
