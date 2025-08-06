@@ -19,7 +19,6 @@ echo "Stack name '$STACK_NAME'"
 # Verify deployment
 echo "Checking current stack status..."
 STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")echo "Current stack status: $STACK_STATUS"
-echo "Current stack status: $STACK_STATUS"
 
 # Handle different stack states
 if [[ "$STACK_STATUS" == "ROLLBACK_COMPLETE" ]] || [[ "$STACK_STATUS" == "ROLLBACK_FAILED" ]] || [[ "$STACK_STATUS" == "CREATE_FAILED" ]]; then
