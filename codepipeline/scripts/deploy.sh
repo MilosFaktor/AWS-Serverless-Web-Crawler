@@ -44,7 +44,26 @@ elif [[ "$STACK_STATUS" == *"IN_PROGRESS"* ]]; then
 fi
 
 echo "🚀 Deploying SAM application..."
-sam deploy --config-env $Environment
+if sam deploy --config-env $Environment; then
+    echo "✅ Deployment completed successfully!"
+else
+    DEPLOY_EXIT_CODE=$?
+    echo "⚠️ SAM deploy returned exit code: $DEPLOY_EXIT_CODE"
+    
+    # Check if it's specifically the "no changes" case
+    if aws cloudformation describe-stacks --stack-name $STACK_NAME >/dev/null 2>&1; then
+        CURRENT_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text)
+        if [[ "$CURRENT_STATUS" == *"COMPLETE"* ]] && [[ "$CURRENT_STATUS" != *"ROLLBACK"* ]]; then
+            echo "ℹ️ Stack is already up to date. No changes needed - continuing..."
+        else
+            echo "❌ Deployment failed with stack in state: $CURRENT_STATUS"
+            exit 1
+        fi
+    else
+        echo "❌ Deployment failed and stack doesn't exist"
+        exit 1
+    fi
+fi
 
 # Verify deployment status AFTER sam deploy
 FINAL_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text)
