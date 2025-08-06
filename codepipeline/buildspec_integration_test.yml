@@ -1,0 +1,26 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - echo "Preparing for integration tests on '$Environment'"
+
+  build:
+    commands:
+      - echo "Running integration tests..."
+      - ./codepipeline/scripts/integration_test.sh
+
+  post_build:
+    commands:
+      - echo "📋 Test Summary:"
+      - echo "📄 Lambda Response:"
+      - cat events/response_initiator_lambda.json || echo "No lambda response"
+      - echo "📄 DynamoDB Records:"
+      - cat events/response_dynamodb_table.json | jq '.Count' || echo "No DynamoDB data"
+
+artifacts:
+  files:
+    - 'serverless-app-sam/response/*'
+    - '**/*'
+  name: TestResults

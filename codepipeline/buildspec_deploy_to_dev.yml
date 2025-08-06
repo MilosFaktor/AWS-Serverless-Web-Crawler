@@ -13,3 +13,10 @@ phases:
   post_build:
     commands:
       - echo "Deployment to '$Environment' completed successfully."
+
+artifacts:
+  files:
+    - 'serverless-app-sam/cfn-outputs.json'
+    - 'serverless-app-sam/cfn-outputs-simple.json'
+    - 'scripts/**/*'
+  name: DeployArtifacts

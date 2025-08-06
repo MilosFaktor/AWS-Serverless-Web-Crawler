@@ -71,13 +71,3 @@ So I'm testing and writing the built-spec YAML. So far it's looking good.Now I h
 it takes so much time on ec2 instance and i need to set up entire infrastructure so i will run docker locally and test it there. i will also pull image of codebuild and run it locally, so i can test it faster and then push it to the codebuild.
 
 
-This is great :it  spins up local docketr container with amazonlinux  and deletes after exit. I can test it locally and then push it to the codebuild.
-docker run -it --rm \
-  -v "$PWD":/workspace \
-  -w /workspace \
-  amazonlinux:2023 \
-  bash
-
-
-
-aws/codebuild/amazonlinux-x86_64-standard:5.0
