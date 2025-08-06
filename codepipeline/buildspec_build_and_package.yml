@@ -7,6 +7,7 @@ cache:
     - '.sam/**/*'              # SAM CLI cache
     - 'serverless-app-sam/node_modules/**/*'            # Node dependencies
     - 'serverless-app-sam/.aws-sam/deps/**/*'  # Project-specific SAM deps.
+    - 'serverless-app-sam/.aws-sam/build/**/*'  # Built artifacts + node_modules
 
 phases:
 
