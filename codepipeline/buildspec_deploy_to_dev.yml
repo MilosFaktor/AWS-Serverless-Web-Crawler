@@ -7,10 +7,6 @@ cache:
     - '/root/.sam/**/*'              # SAM CLI cach
 
 phases:
-  install:
-    commands:
-      - echo "📦 Installing SAM CLI..."
-      - pip install aws-sam-cli==1.142.1
 
   pre_build:
     commands:
