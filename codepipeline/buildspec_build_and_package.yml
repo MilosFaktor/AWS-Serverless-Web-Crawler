@@ -20,7 +20,5 @@ artifacts:
     - 'serverless-app-sam/samconfig.toml'         
     - 'codepipeline/**/*' 
     - 'serverless-app-sam/events/**/*'  # Include events for testing   . 
-  name: build-output
-  discard-paths: no  
-  base-directory: .       
+  name: BuildArtifact
 
