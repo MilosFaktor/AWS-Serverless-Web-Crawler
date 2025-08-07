@@ -21,5 +21,6 @@ artifacts:
     - 'codepipeline/**/*' 
     - 'serverless-app-sam/events/**/*'  # Include events for testing   . 
   name: build-output
-  discard-paths: no         
+  discard-paths: no  
+  base-directory: .       
 
