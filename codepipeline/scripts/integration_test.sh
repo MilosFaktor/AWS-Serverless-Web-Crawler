@@ -94,7 +94,7 @@ echo "📈 Found $record_count records in DynamoDB"
 echo "📋 Sample records:"
 cat events/response_dynamodb_table.json | jq '.Items[0:5]'
 
-# 6. Assert success
+#  6. Assert success
 if [ $record_count -gt 0 ]; then
     echo "✅ Integration test PASSED: Found $record_count records in DynamoDB"
     exit 0
