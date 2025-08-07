@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - echo "AWS SAM starting the delete."
+
+  build:
+    commands:
+      - ./codepipeline/scripts/delete_stack.sh
+
+  post_build:
+    commands:
+      - echo "End of delete phase"
