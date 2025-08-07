@@ -28,9 +28,14 @@ cat samconfig.toml
 
 # Check if stack exists before attempting deletion
 echo "🔍 Checking if stack exists..."
-STACK_NAME=$(sam list stack-outputs --config-env $Environment --output json 2>/dev/null | jq -r '.[0].StackName // empty' || echo "")
 
-if [ -z "$STACK_NAME" ]; then
+# Use the expected stack name pattern from samconfig.toml
+STACK_NAME="serverless-app-crawler-sam-$Environment"
+
+echo "🎯 Looking for stack: $STACK_NAME"
+
+# Check if this specific stack exists
+if ! aws cloudformation describe-stacks --stack-name "$STACK_NAME" >/dev/null 2>&1; then
     echo "ℹ️ No stack found for environment: $Environment"
     echo "✅ Stack deletion completed (stack was already deleted or never existed)"
     exit 0
