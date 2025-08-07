@@ -1,0 +1,23 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - echo "AWS SAM starting deployment to '$Environment'"
+
+  build:
+    commands:
+      - ./codepipeline/scripts/deploy.sh
+
+  post_build:
+    commands:
+      - echo "Deployment to '$Environment' completed successfully."
+
+artifacts:
+  files:
+    - 'serverless-app-sam/cfn-outputs.json'
+    - 'serverless-app-sam/cfn-outputs-simple.json'
+    - 'serverless-app-sam/events/**/*'
+    - 'codepipeline/**/*'
+  name: DeployArtifacts

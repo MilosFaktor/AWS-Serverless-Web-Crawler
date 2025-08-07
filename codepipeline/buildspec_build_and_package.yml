@@ -1,0 +1,24 @@
+version: 0.2
+
+phases:
+
+  pre_build:
+    commands:
+      - echo "AWS SAM starting the build."
+
+  build:
+    commands:
+      - ./codepipeline/scripts/build.sh
+      
+  post_build:
+    commands:
+      - echo "End of build phase"
+
+artifacts:
+  files:
+    - 'serverless-app-sam/.aws-sam/build/**/*'    # ← ALL dependencies included here
+    - 'serverless-app-sam/samconfig.toml'         
+    - 'codepipeline/**/*' 
+    - 'serverless-app-sam/events/**/*'  # Include events for testing   
+  name: BuildArtifact
+

@@ -3,7 +3,7 @@
 version = 0.1
 
 [default.global.parameters]
-stack_name = "serverless-app-sam"
+region = "eu-north-1"
 
 [default.build.parameters]
 cached = true
@@ -12,13 +12,27 @@ parallel = true
 [default.validate.parameters]
 lint = true
 
-[default.deploy.parameters]
+# ─── DEV ENVIRONMENT ───────────────────────────────────────────────────────────
+[dev.deploy.parameters]
+stack_name = "serverless-app-crawler-sam-dev"
+parameter_overrides = "Environment=dev"
 capabilities = "CAPABILITY_IAM"
-confirm_changeset = true
 resolve_s3 = true
-s3_prefix = "serverless-app-crawler-sam"
+s3_prefix = "serverless-app-crawler-sam-dev"
 image_repositories = []
-stack_name = "serverless-app-crawler-sam"
+confirm_changeset = false
+no_confirm_changeset = true
+
+# ─── PROD ENVIRONMENT ──────────────────────────────────────────────────────────
+[prod.deploy.parameters]
+stack_name           = "serverless-app-crawler-sam-prod"
+parameter_overrides  = "Environment=prod"
+capabilities         = "CAPABILITY_IAM"
+resolve_s3           = true
+s3_prefix            = "serverless-app-crawler-sam-prod"
+image_repositories   = []
+confirm_changeset    = false
+no_confirm_changeset = true
 
 [default.package.parameters]
 resolve_s3 = true

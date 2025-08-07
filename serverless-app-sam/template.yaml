@@ -34,7 +34,7 @@ Resources:
     Properties:
       CodeUri: 'Initiator Lambda/'
       Handler: initiator.handler
-      Runtime: python3.12  # Keeping Python 3.12 as you requested
+      Runtime: python3.11 
       MemorySize: 128
       Timeout: 3
       ReservedConcurrentExecutions: 1
@@ -99,7 +99,6 @@ Resources:
       BillingMode: PAY_PER_REQUEST 
 
 Outputs:
-
   InitiatorFunction:
     Description: "Initiator Lambda Function ARN"
     Value: !GetAtt InitiatorFunction.Arn
@@ -111,4 +110,19 @@ Outputs:
   CrawlerQueueUrl:
     Description: "SQS Queue URL"
     Value: !Ref CrawlerQueue
-
+    
+  CrawlerQueueArn:
+    Description: "SQS Queue ARN"
+    Value: !GetAtt CrawlerQueue.Arn
+    
+  VisitedTableName:
+    Description: "DynamoDB Table Name"
+    Value: !Ref VisitedURLTable
+    
+  VisitedTableArn:
+    Description: "DynamoDB Table ARN"
+    Value: !GetAtt VisitedURLTable.Arn
+    
+  StackName:
+    Description: "Stack Name"
+    Value: !Ref AWS::StackName

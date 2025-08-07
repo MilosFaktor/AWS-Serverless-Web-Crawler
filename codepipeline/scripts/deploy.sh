@@ -1,0 +1,104 @@
+#!/bin/bash
+
+set -e  # Exit on any error
+echo "Starting SAM deployment to '$Environment' environment from script..."
+
+# Ensure we're in the right directory
+if [ ! -f "template.yaml" ]; then
+    echo "Navigating to serverless-app-sam directory..."
+    cd serverless-app-sam/
+fi
+
+echo "Deploying to env '$Environment'"
+echo "Using samconfig.toml configuration"
+
+# Get stack name from config
+STACK_NAME=$(grep -A 10 "\[$Environment.deploy.parameters\]" samconfig.toml | grep "stack_name" | cut -d'"' -f2)
+echo "Stack name '$STACK_NAME'"
+
+# Verify deployment
+echo "Checking current stack status..."
+STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")
+echo "Current stack status: $STACK_STATUS"
+
+# Handle different stack states
+if [[ "$STACK_STATUS" == "ROLLBACK_COMPLETE" ]] || [[ "$STACK_STATUS" == "ROLLBACK_FAILED" ]] || [[ "$STACK_STATUS" == "CREATE_FAILED" ]]; then
+    echo "⚠️ Stack is in failed state ($STACK_STATUS). Deleting stack..."
+    aws cloudformation delete-stack --stack-name $STACK_NAME
+    
+    echo "⏳ Waiting for stack deletion to complete..."
+    aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME
+    echo "✅ Stack deleted successfully"
+    
+elif [[ "$STACK_STATUS" == "DELETE_IN_PROGRESS" ]]; then
+    echo "⏳ Stack is being deleted. Waiting for completion..."
+    aws cloudformation wait stack-delete-complete --stack-name $STACK_NAME
+    echo "✅ Stack deletion completed"
+    
+elif [[ "$STACK_STATUS" == *"IN_PROGRESS"* ]]; then
+    echo "⏳ Stack operation in progress ($STACK_STATUS). Waiting..."
+    sleep 30
+    # Retry status check
+    STACK_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text 2>/dev/null || echo "DOES_NOT_EXIST")
+    echo "📊 Updated stack status: $STACK_STATUS"
+fi
+
+echo "🚀 Deploying SAM application..."
+if sam deploy --config-env $Environment; then
+    echo "✅ Deployment completed successfully!"
+else
+    DEPLOY_EXIT_CODE=$?
+    echo "⚠️ SAM deploy returned exit code: $DEPLOY_EXIT_CODE"
+    
+    # Check if it's specifically the "no changes" case
+    if aws cloudformation describe-stacks --stack-name $STACK_NAME >/dev/null 2>&1; then
+        CURRENT_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text)
+        if [[ "$CURRENT_STATUS" == *"COMPLETE"* ]] && [[ "$CURRENT_STATUS" != *"ROLLBACK"* ]]; then
+            echo "ℹ️ Stack is already up to date. No changes needed - continuing..."
+        else
+            echo "❌ Deployment failed with stack in state: $CURRENT_STATUS"
+            exit 1
+        fi
+    else
+        echo "❌ Deployment failed and stack doesn't exist"
+        exit 1
+    fi
+fi
+
+# Verify deployment status AFTER sam deploy
+FINAL_STATUS=$(aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].StackStatus' --output text)
+echo "📊 Final stack status: $FINAL_STATUS"
+
+if [[ "$FINAL_STATUS" == *"COMPLETE"* ]]; then
+    echo "✅ Deployment to '$Environment' completed successfully!"
+
+    # Generate cfn-outputs.json for integration tests
+    echo "📋 Generating cfn-outputs.json for integration tests..."
+    aws cloudformation describe-stacks \
+        --stack-name $STACK_NAME \
+        --query 'Stacks[0].Outputs' \
+        --output json > cfn-outputs.json
+    
+    # Also create a simplified version for easier parsing
+    echo "📋 Creating simplified outputs..."
+    aws cloudformation describe-stacks \
+        --stack-name $STACK_NAME \
+        --query 'Stacks[0].Outputs[].{OutputKey:OutputKey,OutputValue:OutputValue}' \
+        --output json > cfn-outputs-simple.json
+    
+    # Display stack outputs
+    echo "📋 Stack Outputs:"
+    aws cloudformation describe-stacks --stack-name $STACK_NAME --query 'Stacks[0].Outputs[].{Key:OutputKey,Value:OutputValue}' --output table
+
+    # Show generated files
+    echo "📄 Generated files for integration tests:"
+    ls -la cfn-outputs*.json
+    echo "📄 Content of cfn-outputs.json:"
+    cat cfn-outputs.json
+
+else
+    echo "❌ Deployment failed. Stack status: $FINAL_STATUS"
+    exit 1
+fi
+
+echo "🎉 Deploy script completed successfully!"
