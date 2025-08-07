@@ -57,7 +57,7 @@ Resources:
       Handler: index.handler
       Runtime: nodejs20.x  
       MemorySize: 812
-      Timeout: 90 
+      Timeout: 60 
       ReservedConcurrentExecutions: 5
       Architectures:
         - x86_64

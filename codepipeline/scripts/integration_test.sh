@@ -3,10 +3,10 @@
 # Navigate to serverless-app-sam directory where everything is
 cd serverless-app-sam/
 
-✅
+#✅
 # 1. Show the raw JSON file (debugging)
-cat cfn-outputs.json
-✅
+#cat cfn-outputs.json
+#✅
 # Parse cfn-outputs.json to get function ARN
 InitiatorFunction=$(cat cfn-outputs.json | \
   jq -r '.[] | select(.OutputKey=="InitiatorFunction") | .OutputValue')
@@ -33,10 +33,16 @@ echo "✅ Lambda invocation completed!"
 echo "📄 Response:"
 cat events/response_initiator_lambda.json
 
-# 3. Poll SQS until empty
-echo -e "\n⏳ Step 2: Polling SQS queue until empty..."
-max_polls=30  # 5 minutes max (30 * 10 seconds)
+# 3. Wait and poll SQS until empty
+echo -e "\n⏳ Step 2: Waiting for crawling to complete..."
+
+echo "⏸️ Initial wait: 30 seconds to allow Lambda processing to begin..."
+sleep 30  # Initial wait before polling
+
+echo "🔍 Starting queue monitoring..."
+max_polls=30  # 5 minutes max after initial wait
 poll_count=0
+consecutive_empty=0  # Track consecutive empty polls
 
 while [ $poll_count -lt $max_polls ]; do
     poll_count=$((poll_count + 1))
@@ -54,15 +60,21 @@ while [ $poll_count -lt $max_polls ]; do
     echo "📊 Poll $poll_count: $total_messages messages in queue (visible: $visible_messages, processing: $invisible_messages)"
     
     if [ $total_messages -eq 0 ]; then
-        echo "✅ Queue is empty!"
-        break
+        consecutive_empty=$((consecutive_empty + 1))
+        if [ $consecutive_empty -ge 3 ]; then  # 3 consecutive empty polls = truly done
+            echo "✅ Queue confirmed empty after 3 consecutive checks!"
+            break
+        fi
+        echo "🔄 Empty queue detected, confirming... ($consecutive_empty/3)"
+    else
+        consecutive_empty=0  # Reset counter if messages found
     fi
     
     sleep 10  # Wait 10 seconds between polls
 done
 
 if [ $poll_count -ge $max_polls ]; then
-    echo "⚠️ Timeout: Queue still has messages after 5 minutes"
+    echo "⚠️ Timeout: Queue still has messages after 5 minutes + 50 second initial wait"
 fi
 
 # 4. Scan DynamoDB table and save results
@@ -80,7 +92,7 @@ echo "📈 Found $record_count records in DynamoDB"
 
 # Display first few records for debugging
 echo "📋 Sample records:"
-cat events/response_dynamodb_table.json | jq '.Items[0:10]'
+cat events/response_dynamodb_table.json | jq '.Items[0:5]'
 
 # 6. Assert success
 if [ $record_count -gt 0 ]; then
@@ -90,18 +102,3 @@ else
     echo "❌ Integration test FAILED: No records found in DynamoDB"
     exit 1
 fi
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-cat events/response_dynamodb_table.json

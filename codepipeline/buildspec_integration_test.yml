@@ -13,12 +13,11 @@ phases:
 
   post_build:
     commands:
-      - cd serverless-app-sam 
       - echo "📋 Test Summary:"
       - echo "📄 Lambda Response:"
-      - cat events/response_initiator_lambda.json || echo "No lambda response"
+      - cat serverless-app-sam/events/response_initiator_lambda.json || echo "No lambda response"
       - echo "📄 DynamoDB Records:"
-      - cat events/response_dynamodb_table.json | jq '.Count' || echo "No DynamoDB data"
+      - cat serverless-app-sam/events/response_dynamodb_table.json | jq '.Count' || echo "No DynamoDB data"
 
 artifacts:
   files:

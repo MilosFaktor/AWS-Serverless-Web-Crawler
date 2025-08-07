@@ -13,10 +13,4 @@ sam build
 echo "SAM build completed successfully"
 
 echo "Build artifacts created:"
-ls -la .aws-sam/build/
-cat .aws-sam/build/template.yaml
-echo "✅" 
-pwd
-echo "✅"
-
 echo "Build script completed successfully!"
