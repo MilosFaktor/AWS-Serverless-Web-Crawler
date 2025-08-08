@@ -1,0 +1,16 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    GITHUB_TOKEN: github-token
+
+phases:
+  build:
+    commands:
+    - curl -X POST \
+      -H "Authorization: token $GITHUB_TOKEN" \
+      -H "Accept: application/vnd.github.v3+json" \
+      https://api.github.com/repos/MilosFaktor/AWS-Serverless-Web-Crawler/statuses/$CODEBUILD_RESOLVED_SOURCE_VERSION \
+      -d '{"state":"success","description":"Pipeline manually approved and succeeded","context":"aws-codebuild"}'
+
+       
