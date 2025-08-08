@@ -8,6 +8,6 @@ phases:
   build:
     commands:
       - chmod +x post_approval.sh
-      - ./post_approval.sh
+      - .codepipeline/scripts/post_approval.sh
 
        
