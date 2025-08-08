@@ -7,7 +7,7 @@ env:
 phases:
   build:
     commands:
-      - chmod +x post_approval.sh
+      - chmod +x codepipeline/scripts/post_approval.sh
       - .codepipeline/scripts/post_approval.sh
 
        
