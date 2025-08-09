@@ -203,7 +203,7 @@ Production is **always in a known good state**. Mistakes are impossible by defau
 
 <img src="docs/screenshots/11 - Crawler.png" width="750">
 
-<img src="docs/screenshots/8 - dynamoDB after crawl.png" width="750">
+<img src="docs/screenshots/8 - dynamoDdB after crawl.png" width="750">
 
 <img src="docs/screenshots/9 - CloudWatch metrics.png" width="750">
 
