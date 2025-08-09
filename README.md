@@ -8,7 +8,7 @@ This release documents the **CD pipeline** built for the Serverless Web Crawler 
 👉 [All screenshots](docs/screenshots/)
 
 ### Want the full deployment journey with errors, fixes, lessons, and AWS tweaks?  
-👉 [Build-JOURNAL.md](docs/Build-JOURNAL.md)
+👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
 
 ---
 
