@@ -13,7 +13,7 @@ phases:
 
   post_build:
     commands:
-      - echo "📋 Test Summary:"
+      - echo "📋 Test  Summary:"
       - echo "📄 Lambda Response:"
       - cat serverless-app-sam/events/response_initiator_lambda.json || echo "No lambda response"
       - echo "📄 DynamoDB Records:"

@@ -1,0 +1,13 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    GITHUB_TOKEN: github-token
+
+phases:
+  build:
+    commands:
+      - chmod +x codepipeline/scripts/post_approval.sh
+      - ./codepipeline/scripts/post_approval.sh
+
+       
