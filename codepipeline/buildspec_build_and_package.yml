@@ -18,7 +18,7 @@ artifacts:
   files:
     - 'serverless-app-sam/.aws-sam/build/**/*'    # ← ALL dependencies included here
     - 'serverless-app-sam/samconfig.toml'         
-    - 'codepipeline/**/*' 
-    - 'serverless-app-sam/events/**/*'  # Include events for testing   .
+    - 'codepipeline/**/*'                   # configuration for CodePipeline / scripts and yml files
+    - 'serverless-app-sam/events/**/*'  # Include events for testing   
   name: BuildArtifact
 
