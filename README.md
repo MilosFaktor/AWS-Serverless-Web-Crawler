@@ -8,7 +8,7 @@ This release documents the **CD pipeline** built for the Serverless Web Crawler 
 👉 [All screenshots](docs/screenshots/)
 
 ### Want the full deployment journey with errors, fixes, lessons, and AWS tweaks?  
-👉 [DEPLOY-JOURNAL.md](docs/DEPLOY-JOURNAL.md)
+👉 [Build-JOURNAL.md](docs/Build-JOURNAL.md)
 
 ---
 
@@ -20,7 +20,7 @@ This release documents the **CD pipeline** built for the Serverless Web Crawler 
 | 2 | **Deploy to Prod** | Deploy the exact artifacts tested in Dev |
 | 3 | **Delete Dev Stack** | Clean up resources & avoid cost drift |
 
-<img src="docs/screenshots/CD-CD-CodePipeline.png" width="750">
+<img src="docs/screenshots/CD-1-CD-CodePipeline.png" width="750">
 
 ---
 
@@ -43,6 +43,8 @@ This release documents the **CD pipeline** built for the Serverless Web Crawler 
 ### Outcome
 - Acts as the **entry point** for production deployment.
 - Ensures only tested, approved, and reviewed code reaches production.
+
+<img src="docs/screenshots/CD-0-pipeline-trigger.png" width="750">
 
 ---
 
@@ -73,6 +75,12 @@ This release documents the **CD pipeline** built for the Serverless Web Crawler 
 - Predictable, reproducible deployments.
 - No accidental resource overlap.
 - Fully automated and hands-off once triggered.
+
+<img src="docs/screenshots/CD-2.0-starting-pipeline-with-dev.png" width="750">
+
+<img src="docs/screenshots/CD-2.1-after-prod-stack-deploy.png" width="750">
+
+<img src="docs/screenshots/CD-3-CodeBuild-deploy-to-prod.png" width="750">
 
 ---
 
@@ -108,6 +116,12 @@ After each merge to `main`:
 
 ✅ **Final CD Pipeline Flow**  
 Push to `main` → Source Trigger → Deploy-to-Prod (using Dev artifacts) → Delete Dev stack → Clean, tested production release.
+
+<img src="docs/screenshots/CD-2.2-deleting-dev-stack.png" width="750">
+
+<img src="docs/screenshots/CD-2.3-only-prod-stack-remained.png" width="750">
+
+<img src="docs/screenshots/CD-4-CodeBuild-delete-dev-stack.png" width="750">
 
 ---
 
