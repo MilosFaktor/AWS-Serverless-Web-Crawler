@@ -1,6 +1,6 @@
-# 🚀 Serverless Web Crawler – v3.0.0 CI/CD Pipeline
+# 🚀 Serverless Web Crawler – v3.0.0 CI Pipeline
 
-This release documents the **CI/CD pipeline** built for the Serverless Web Crawler project, using **AWS CodePipeline, CodeBuild, SAM**, and **GitHub Flow** with **branch protection + status checks**.
+This release documents the **CI pipeline** built for the Serverless Web Crawler project, using **AWS CodePipeline, CodeBuild, SAM**, and **GitHub Flow** with **branch protection + status checks**.
 
 ---
 
@@ -26,7 +26,7 @@ This release documents the **CI/CD pipeline** built for the Serverless Web Crawl
 <img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
 
 
-<img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
+<img src="docs/screenshots/1.1-pipeline-successfully-executed.png" width="750">
 
 ---
 
@@ -116,7 +116,9 @@ Full end-to-end verification that:
 
 **Outcome:** Reliable functional gate before production.
 
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
+<img src="docs/screenshots/4-CodeBuild-integration-test-logs.png" width="750">
+
+<img src="docs/screenshots/4.1-DynamoDB-Results-from-integration-test.png" width="750">
 
 ---
 
@@ -138,7 +140,11 @@ Full end-to-end verification that:
   2. Manual approval given.
   3. Status check posts successfully.
 
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
+<img src="docs/screenshots/5-SNS-notification-email.png" width="750">
+
+<img src="docs/screenshots/1.1-pipeline-successfully-executed.png" width="750">
+
+<img src="docs/screenshots/github-all-checks-have-passed.png" width="750">
 
 ---
 
@@ -163,7 +169,10 @@ Full end-to-end verification that:
 Production is **always in a known good state**. Mistakes are impossible by default, not just discouraged by policy.
 
 <img src="docs/screenshots/github-1-protection-rule-rejected-commit-to-main-even-for-admin.png" width="750">
+
 <img src="docs/screenshots/github-2-cant-be-merged-before-status-check-on-post-approval.png" width="750">
+
+<img src="docs/screenshots/github-all-checks-have-passed.png" width="750">
 
 ### Pipeline in progress with previous rejected manual approval
 
@@ -190,22 +199,6 @@ Production is **always in a known good state**. Mistakes are impossible by defau
 - GitHub Status API integration with AWS
 - Secure token management via AWS Secrets Manager
 - SNS notifications in pipeline workflows
-
----
-
-## Screenshots
-
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
-
-<img src="docs/screenshots/7 - CloudFromation stack created.png" width="750"> 
-
-<img src="docs/screenshots/10 - Initiator.png" width="750">
-
-<img src="docs/screenshots/11 - Crawler.png" width="750">
-
-<img src="docs/screenshots/8 - dynamoDdB after crawl.png" width="750">
-
-<img src="docs/screenshots/9 - CloudWatch metrics.png" width="750">
 
 ---
 
