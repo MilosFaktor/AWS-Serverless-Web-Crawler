@@ -238,7 +238,7 @@ $RECYCLE.BIN/
 
 ### AWS SAM ###
 # AWS SAM build artifacts
-.aws-sam/
+serverless-app-sam/.aws-sam/
 # Uncomment the line below if samconfig.toml contains sensitive information
 # samconfig.toml
 
