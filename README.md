@@ -1,219 +1,131 @@
-# 🚀 Serverless Web Crawler – v3.0.0 CI Pipeline
+# 🚀 Serverless Web Crawler – v3.0.0 CD Pipeline
 
-This release documents the **CI pipeline** built for the Serverless Web Crawler project, using **AWS CodePipeline, CodeBuild, SAM**, and **GitHub Flow** with **branch protection + status checks**.
+This release documents the **CD pipeline** built for the Serverless Web Crawler project, using **AWS CodePipeline, CodeBuild, SAM**, and artifact promotion from the CI pipeline.
 
 ---
 
 ### Do you want to see all screenshots from the project?  
 👉 [All screenshots](docs/screenshots/)
 
-### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
-👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
+### Want the full deployment journey with errors, fixes, lessons, and AWS tweaks?  
+👉 [DEPLOY-JOURNAL.md](docs/DEPLOY-JOURNAL.md)
 
 ---
 
-## 📋 CI Pipeline Overview
+## 📋 CD Pipeline Overview
 
 | Step | Name | Purpose |
 |------|------|---------|
-| 1 | **Source** | Trigger from GitHub Pull Request events |
-| 2 | **Build & Package** | Validate & package SAM application artifacts |
-| 3 | **Deploy to Dev** | Deploy packaged stack to development environment |
-| 4 | **Integration Testing** | End-to-end functional tests across AWS services |
-| 5 | **Manual Approval + Status Check** | Human gate + enforce GitHub merge protection |
+| 1 | **Source** | Trigger on push to `main` after CI success |
+| 2 | **Deploy to Prod** | Deploy the exact artifacts tested in Dev |
+| 3 | **Delete Dev Stack** | Clean up resources & avoid cost drift |
 
-
-<img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
-
-
-<img src="docs/screenshots/1.1-pipeline-successfully-executed.png" width="750">
+<img src="docs/screenshots/CD-CD-CodePipeline.png" width="750">
 
 ---
 
-## 🔹 CI – Step 1: Source (Pull Request Event Webhook)
+## 🔹 CD – Step 1: Source (Push to Main Trigger)
 
 ### What I Did
-- Connected CodePipeline to GitHub using an AWS CodeStar Connections integration (GitHub App authentication).
-- Triggered from **pull request events** (not direct pushes).
-- Filtered **destination branch** to `main`.
-- Selected PR events:
-  - **Created** (PR opened)
-  - **Updated** (commits pushed to PR’s source branch)
-- Left **Closed** unselected.
+- Configured AWS CodePipeline (CD) to **trigger only on push events to the `main` branch**.
+- This stage runs only after:
+  1. CI pipeline completes successfully.
+  2. Manual approval is granted.
+  3. GitHub Status Check passes.
+- Authentication via **GitHub App** (same as CI) for secure integration.
 
 ### Key Learnings
-- PR event filtering is **destination-based**, not source-based.
-- Once a PR is open, commits to the feature branch trigger CI automatically.
-- Filtering to only “Created” & “Updated” keeps pipeline clean.
+- CI and CD separation is critical:
+  - CI = validate & approve code.
+  - CD = deploy already approved code.
+- Push-to-main trigger guarantees production uses a **known good commit**.
+
+### Outcome
+- Acts as the **entry point** for production deployment.
+- Ensures only tested, approved, and reviewed code reaches production.
+
+---
+
+## 🔹 CD – Step 2: Deploy to Production
+
+### What I Did
+- Reused the same **`deploy.sh`** and **`buildspec-deploy.yml`** as the Dev stage in CI.
+- Changed environment variables to target `prod`:
+  - `Environment=prod`
+  - `STACK_NAME=serverless-webcrawler-$Environment`
+  
+- Used a **separate IAM role** for production with stricter permissions.
+- Fully automated `sam deploy --no-confirm-changeset`.
+
+### Key Learnings
+- **Artifact promotion**: Used Dev build artifacts directly for Prod deploy to ensure **bit-for-bit identical code**.
+- **Separate IAM roles** per environment to reduce blast radius.
+- Unique stack names prevent accidental overwrites.
 
 ### Challenges & Fixes
-- ❌ Pipeline didn’t trigger on feature branch commits initially.
-- ✅ Fixed by setting destination branch filter to `main`.
+- **Artifact Passing**:
+  - Initially tried creating a custom S3 bucket for artifacts.
+  - Discovered CodePipeline’s own managed S3 bucket already stores them.
+  - Located artifact path via **View Artifacts** in the Dev Build stage and configured Prod deploy to pull directly from it.
+- Result: **Prod always deploys the same tested code from Dev**.
 
-**Outcome:** CI starts automatically for any PR → main.
+### Outcome
+- Predictable, reproducible deployments.
+- No accidental resource overlap.
+- Fully automated and hands-off once triggered.
 
 ---
 
-## 🔹 CI – Step 2: Build & Package (CodeBuild)
+## 🔹 CD – Step 3: Dev Stack Deletion
 
 ### What I Did
-- Minimal `buildspec.yml` that:
-  1. Validates the SAM template.
-  2. Runs `sam build` → `.aws-sam/build/`.
-- Exported only required artifacts for later stages.
+- Added a cleanup stage to **delete the Dev stack** after a successful Prod deployment.
+- AWS CLI in CodeBuild:
+  ```bash
+  aws cloudformation delete-stack --stack-name "$STACK_NAME"
+  aws cloudformation wait stack-delete-complete --stack-name "$STACK_NAME"
+  ```
 
-### Why Split Build & Deploy
-- **One SAM template** for all environments, controlled by `STAGE=dev|prod`.
-- Deploy stage injects env-specific params at runtime without rebuilding.
+## Key Learnings
+- Automated cleanup avoids resource drift and cost leaks.
+- `aws cloudformation wait` ensures deletion finishes before pipeline exit.
+- IAM permissions must allow all delete actions for stack resources.
 
-### Key Learnings
-- Artifacts = “handoff contract” for later stages.
-- Clean rebuilds keep template/code in sync.
-- Using preinstalled runtimes saved ~30s build time.
+## Challenges & Fixes
+**Event Source Mappings**  
+- Deletion failed due to Lambda SQS triggers still attached.  
+- Added `lambda:ListEventSourceMappings` & `lambda:DeleteEventSourceMapping` to cleanup script.
 
-<img src="docs/screenshots/2-CodeBuild-build-and-package-stage-logs.png" width="750">
+**IAM Permissions**  
+- Added required delete permissions for Lambda, SQS, DynamoDB, and CloudFormation resources.
 
----
+## Outcome
+After each merge to `main`:
+1. Prod stack is deployed from tested Dev artifacts.
+2. Dev stack is deleted automatically.
 
-## 🔹 CI – Step 3: Deploy to Dev
+**Result:** Clean AWS account, no cost drift, and Dev ready for the next branch.
 
-### What I Did
-- Dedicated `deploy.sh` script:
-  - Validates stack status before deploy.
-  - Deletes failed stacks automatically.
-  - Runs `sam deploy` with env-specific settings.
-  - Saves CloudFormation outputs (full + simplified JSON).
-
-### Challenges
-- **IAM Permissions:** Separate Dev/Prod roles.
-- Handling **ROLLBACK** states without blocking future deploys.
-
-**Outcome:** Dev stack deployed cleanly, ready for integration testing.
-
-<img src="docs/screenshots/3.1-CloudFormation-stack-dev-has-been-created.png" width="750">
-
-<img src="docs/screenshots/3-CodeBuild-deploy-to-dev-logs.png" width="750">
-
----
-
-## 🔹 CI – Step 4: Integration Testing
-
-### Purpose
-Full end-to-end verification that:
-1. Initiator Lambda → SQS → Crawler Lambda → DynamoDB works as expected.
-
-### What Happens
-- Load stack outputs from artifacts.
-- Invoke Initiator Lambda with `fileb://` payload.
-- Wait 30s before polling SQS (avoids race conditions).
-- Poll SQS until empty (with 3 consecutive empty checks).
-- Scan DynamoDB table → must have ≥1 record to pass.
-
-### Challenges
-- Missing artifacts between stages → fixed by explicit artifact listing.
-- `fileb://` vs `file://` payload encoding.
-- Timing logic to avoid false negatives.
-
-**Outcome:** Reliable functional gate before production.
-
-<img src="docs/screenshots/4-CodeBuild-integration-test-logs.png" width="750">
-
-<img src="docs/screenshots/4.1-DynamoDB-Results-from-integration-test.png" width="750">
-
----
-
-## 🔹 CI – Step 5: Manual Approval, SNS Notification & GitHub Status Check
-
-### What I Did
-- Added **Manual Approval** action.
-- Linked to **SNS topic** → email notification with:
-  - Link to PR
-  - Link to CodePipeline approval page
-- Added post-approval CodeBuild job:
-  - Posts `"success"` to GitHub Status API.
-  - Uses `GITHUB_TOKEN` from Secrets Manager.
-
-### How it Works
-- PR → Build → Deploy → Test → **Approval** → Status Check → Merge
-- **Merge button locked** until:
-  1. Pipeline passes.
-  2. Manual approval given.
-  3. Status check posts successfully.
-
-<img src="docs/screenshots/5-SNS-notification-email.png" width="750">
-
-<img src="docs/screenshots/1.1-pipeline-successfully-executed.png" width="750">
-
-<img src="docs/screenshots/github-all-checks-have-passed.png" width="750">
-
----
-
-## 🔹 GitHub Flow + Branch Protection
-
-### What I Did
-- Adopted **GitHub Flow**:
-  - `main` = production-ready, protected.
-  - `feature/*` = development branches.
-- Branch protection rules (even for admins):
-  - No direct commits to main.
-  - All changes via PR.
-  - PR merges allowed **only if status checks pass**.
-- Status checks posted **from the pipeline** after tests + manual approval.
-
-### Why This Matters
-- Eliminates human error.
-- Enforces discipline at the platform level.
-- Prevents accidental or untested merges into production.
-
-**Outcome:**  
-Production is **always in a known good state**. Mistakes are impossible by default, not just discouraged by policy.
-
-<img src="docs/screenshots/github-1-protection-rule-rejected-commit-to-main-even-for-admin.png" width="750">
-
-<img src="docs/screenshots/github-2-cant-be-merged-before-status-check-on-post-approval.png" width="750">
-
-<img src="docs/screenshots/github-all-checks-have-passed.png" width="750">
-
-### Pipeline in progress with previous rejected manual approval
-
-<img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
-
----
-
-## ✅ Final Flow Diagram
-- feature/* → Pull Request → CI Pipeline:
-    1. Source
-    2. Build & Package
-    3. Deploy to Dev
-    4. Integration Tests
-    5. Approval + Status Check
-    → Merge to main → CD Pipeline → Production
+✅ **Final CD Pipeline Flow**  
+Push to `main` → Source Trigger → Deploy-to-Prod (using Dev artifacts) → Delete Dev stack → Clean, tested production release.
 
 ---
 
 ## 📦 Skills & Knowledge Demonstrated
-- GitHub Flow + Branch Protection Rules
-- AWS CodePipeline / CodeBuild multi-stage CI
-- SAM packaging & deployment strategies
-- Integration testing in CI/CD with async AWS services
-- GitHub Status API integration with AWS
-- Secure token management via AWS Secrets Manager
-- SNS notifications in pipeline workflows
+- Multi-pipeline CI/CD separation
+- Artifact promotion across pipelines
+- Environment-specific IAM role usage
+- AWS SAM multi-env deployments
+- Automated CloudFormation stack cleanup
+- AWS CLI scripting in CodeBuild
+- Cost-optimization via environment cleanup
 
 ---
 
 ## 👤 Author
-Milos Faktor — [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)
-
-Built and tested in Denmark, shared with the world.
+**Milos Faktor** — [LinkedIn](https://www.linkedin.com/in/milos-faktor-78b429255/)
 
 ---
 
-### Want the full build journey with errors, fixes, lessons, and AWS tweaks?  
-👉 [BUILD-JOURNAL.md](docs/BUILD-JOURNAL.md)
-
-### Do you want to see all screenshots from the project?  
-👉 [All screenshots](docs/screenshots/)
-
-### Hashtags
-#AWS #CodePipeline #CodeBuild #AWSSAM #CI_CD #DevOps #GitHubFlow #BranchProtection #StatusChecks #InfrastructureAsCode #Serverless #Lambda #SQS #DynamoDB #CloudWatch #SecretsManager #Automation #GitHubActions #CloudComputing #SoftwareArchitecture #WebCrawler
+## 🔖 Hashtags
+#AWS #CodePipeline #CodeBuild #AWSSAM #CI_CD #DevOps #GitHubFlow #ArtifactPromotion #InfrastructureAsCode #Serverless #Lambda #SQS #DynamoDB #CloudWatch #Automation #CloudComputing #WebCrawler #AWSCleanup
