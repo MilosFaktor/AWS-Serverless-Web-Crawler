@@ -142,4 +142,4 @@ Push to `main` → Source Trigger → Deploy-to-Prod (using Dev artifacts) → D
 ---
 
 ## 🔖 Hashtags
-#AWS #CodePipeline #CodeBuild #AWSSAM #CI_CD #DevOps #GitHubFlow #ArtifactPromotion #InfrastructureAsCode #Serverless #Lambda #SQS #DynamoDB #CloudWatch #Automation #CloudComputing #WebCrawler #AWSCleanup
+#AWS #CodePipeline #CodeBuild #AWSSAM #CI_CD #DevOps #GitHubFlow #ArtifactPromotion #InfrastructureAsCode #Serverless #Lambda #SQS #DynamoDB #CloudWatch #Automation #CloudComputing #WebCrawler #AWSCleanup 
