@@ -73,14 +73,14 @@ if [[ "$FINAL_STATUS" == *"COMPLETE"* ]]; then
     echo "✅ Deployment to '$Environment' completed successfully!"
 
     # Generate cfn-outputs.json for integration tests
-    echo "📋 Generating cfn-outputs.json for integration tests..."
+    echo "Generating cfn-outputs.json for integration tests..."
     aws cloudformation describe-stacks \
         --stack-name $STACK_NAME \
         --query 'Stacks[0].Outputs' \
         --output json > cfn-outputs.json
     
     # Also create a simplified version for easier parsing
-    echo "📋 Creating simplified outputs..."
+    echo "Creating simplified outputs..."
     aws cloudformation describe-stacks \
         --stack-name $STACK_NAME \
         --query 'Stacks[0].Outputs[].{OutputKey:OutputKey,OutputValue:OutputValue}' \

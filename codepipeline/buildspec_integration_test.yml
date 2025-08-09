@@ -13,8 +13,8 @@ phases:
 
   post_build:
     commands:
-      - echo "📋 Test  Summary:"
-      - echo "📄 Lambda Response:"
+      - echo "Test  Summary:"
+      - echo "Lambda Response:"
       - cat serverless-app-sam/events/response_initiator_lambda.json || echo "No lambda response"
       - echo "📄 DynamoDB Records:"
       - cat serverless-app-sam/events/response_dynamodb_table.json | jq '.Count' || echo "No DynamoDB data"
@@ -23,5 +23,5 @@ artifacts:
   files:
     - 'serverless-app-sam/events/**/*'     # Test event files
     - 'serverless-app-sam/response/**/*'   # Test response files  
-    - 'codepipeline/**/*'
+    - 'codepipeline/**/*'                 # configuration for CodePipeline / scripts and yml files
   name: TestResults
