@@ -1,3 +1,3 @@
 {
-  "rootUrl": "https://drugastrana.rs/"
+  "rootUrl": "$TARGET_URL"
 }
