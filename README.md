@@ -22,7 +22,11 @@ This release documents the **CI/CD pipeline** built for the Serverless Web Crawl
 | 4 | **Integration Testing** | End-to-end functional tests across AWS services |
 | 5 | **Manual Approval + Status Check** | Human gate + enforce GitHub merge protection |
 
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
+
+<img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
+
+
+<img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
 
 ---
 
@@ -48,8 +52,6 @@ This release documents the **CI/CD pipeline** built for the Serverless Web Crawl
 
 **Outcome:** CI starts automatically for any PR → main.
 
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
-
 ---
 
 ## 🔹 CI – Step 2: Build & Package (CodeBuild)
@@ -69,7 +71,7 @@ This release documents the **CI/CD pipeline** built for the Serverless Web Crawl
 - Clean rebuilds keep template/code in sync.
 - Using preinstalled runtimes saved ~30s build time.
 
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
+<img src="docs/screenshots/2-CodeBuild-build-and-package-stage-logs.png" width="750">
 
 ---
 
@@ -88,7 +90,9 @@ This release documents the **CI/CD pipeline** built for the Serverless Web Crawl
 
 **Outcome:** Dev stack deployed cleanly, ready for integration testing.
 
-<img src="docs/screenshots/6 - SAM deployed resources.png" width="750">
+<img src="docs/screenshots/3.1-CloudFormation-stack-dev-has-been-created.png" width="750">
+
+<img src="docs/screenshots/3-CodeBuild-deploy-to-dev-logs.png" width="750">
 
 ---
 
@@ -160,6 +164,10 @@ Production is **always in a known good state**. Mistakes are impossible by defau
 
 <img src="docs/screenshots/github-1-protection-rule-rejected-commit-to-main-even-for-admin.png" width="750">
 <img src="docs/screenshots/github-2-cant-be-merged-before-status-check-on-post-approval.png" width="750">
+
+### Pipeline in progress with previous rejected manual approval
+
+<img src="docs/screenshots/1-pipeline-in-progress-with-previous-rejected-approval.png" width="750">
 
 ---
 
