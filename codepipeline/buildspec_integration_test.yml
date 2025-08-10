@@ -5,6 +5,8 @@ phases:
   pre_build:
     commands:
       - echo "Preparing for integration tests on '$Environment'"
+      - jq --arg url "$ROOT_URL" '.rootUrl = $url' event.json > event.tmp && mv event.tmp event.json
+
 
   build:
     commands:
