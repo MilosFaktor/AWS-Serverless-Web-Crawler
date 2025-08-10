@@ -5,7 +5,7 @@ phases:
   pre_build:
     commands:
       - echo "Preparing for integration tests on '$Environment'"
-      - jq --arg url "$ROOT_URL" '.rootUrl = $url' event.json > event.tmp && mv event.tmp event.json
+      - jq --arg url "$ROOT_URL" '.rootUrl = $url' serverless-app-sam/events/event.json > event.tmp && mv event.tmp serverless-app-sam/events/event.json
 
 
   build:
